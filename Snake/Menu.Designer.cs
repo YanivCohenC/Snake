@@ -28,11 +28,31 @@ partial class Menu
     /// </summary>
     private void InitializeComponent()
     {
-        this.components = new System.ComponentModel.Container();
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Text = "Form1";
+        pictureBox1 = new PictureBox();
+        ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+        SuspendLayout();
+        // 
+        // pictureBox1
+        // 
+        pictureBox1.Location = new Point(277, 35);
+        pictureBox1.Name = "pictureBox1";
+        pictureBox1.Size = new Size(251, 128);
+        pictureBox1.TabIndex = 0;
+        pictureBox1.TabStop = false;
+        // 
+        // Menu
+        // 
+        AutoScaleDimensions = new SizeF(7F, 15F);
+        AutoScaleMode = AutoScaleMode.Font;
+        ClientSize = new Size(800, 450);
+        Controls.Add(pictureBox1);
+        Name = "Menu";
+        Text = "Form1";
+        ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+        ResumeLayout(false);
     }
 
     #endregion
+
+    private PictureBox pictureBox1;
 }
