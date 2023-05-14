@@ -38,16 +38,16 @@ partial class Menu
         // 
         // pictureBox1
         // 
-        pictureBox1.Location = new Point(514, 75);
+        pictureBox1.Location = new Point(324, 44);
         pictureBox1.Margin = new Padding(6);
         pictureBox1.Name = "pictureBox1";
-        pictureBox1.Size = new Size(466, 273);
+        pictureBox1.Size = new Size(866, 349);
         pictureBox1.TabIndex = 0;
         pictureBox1.TabStop = false;
         // 
         // button1
         // 
-        button1.Location = new Point(594, 395);
+        button1.Location = new Point(594, 452);
         button1.Name = "button1";
         button1.Size = new Size(319, 96);
         button1.TabIndex = 1;
@@ -58,7 +58,7 @@ partial class Menu
         // button2
         // 
         button2.Enabled = false;
-        button2.Location = new Point(594, 497);
+        button2.Location = new Point(594, 554);
         button2.Name = "button2";
         button2.Size = new Size(319, 96);
         button2.TabIndex = 2;
@@ -68,7 +68,7 @@ partial class Menu
         // 
         // button3
         // 
-        button3.Location = new Point(594, 599);
+        button3.Location = new Point(594, 656);
         button3.Name = "button3";
         button3.Size = new Size(319, 96);
         button3.TabIndex = 3;
@@ -78,7 +78,7 @@ partial class Menu
         // 
         // button4
         // 
-        button4.Location = new Point(594, 701);
+        button4.Location = new Point(594, 758);
         button4.Name = "button4";
         button4.Size = new Size(319, 96);
         button4.TabIndex = 4;
@@ -90,7 +90,7 @@ partial class Menu
         // 
         AutoScaleDimensions = new SizeF(13F, 32F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(1486, 960);
+        ClientSize = new Size(1532, 922);
         Controls.Add(button4);
         Controls.Add(button3);
         Controls.Add(button2);
