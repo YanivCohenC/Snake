@@ -8,7 +8,7 @@ public partial class Menu : Form
     private List<Player> playerList;
     private List<string> controlList;
 
-    public Menu()
+   public Menu()
     {
         InitializeComponent();
         // Players
@@ -55,14 +55,14 @@ public partial class Menu : Form
             }
 
 
-            //new form and ful screen
-            Form f2 = new Form();
-            f2.Size = new Size();
+            //new Form and ful screen
+            Form board = new Board();
+            board.Size = new Size();
             this.Hide();
-            f2.WindowState = FormWindowState.Normal;
-            f2.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            f2.Bounds = Screen.PrimaryScreen.Bounds;
-            f2.ShowDialog();
+            board.WindowState = FormWindowState.Normal;
+            board.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            board.Bounds = Screen.PrimaryScreen.Bounds;
+            board.ShowDialog();
             this.Close();
         }
     }

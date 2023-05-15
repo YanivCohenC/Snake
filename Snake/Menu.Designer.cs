@@ -72,7 +72,7 @@ partial class Menu
         button2.TabIndex = 2;
         button2.Text = "Continue";
         button2.UseVisualStyleBackColor = true;
-        button2.Click += continueGame_Click;
+        
         // 
         // button3
         // 
@@ -83,7 +83,7 @@ partial class Menu
         button3.TabIndex = 3;
         button3.Text = "Scoreboard";
         button3.UseVisualStyleBackColor = true;
-        button3.Click += openScoreBoard_Click;
+      
         // 
         // button4
         // 
