@@ -134,18 +134,18 @@ partial class Menu
         p2Controller.Text = "Choose your controller:";
         p2Controller.SelectionChangeCommitted += p2Controller_SelectionChangeCommitted;
         // 
-        // player1Name
+        // p1Name
         // 
         p1Name.Location = new Point(187, 386);
-        p1Name.Name = "player1Name";
+        p1Name.Name = "p1Name";
         p1Name.PlaceholderText = "Enter Name";
         p1Name.Size = new Size(136, 31);
         p1Name.TabIndex = 9;
         // 
-        // player2Name
+        // p2Name
         // 
         p2Name.Location = new Point(939, 386);
-        p2Name.Name = "player2Name";
+        p2Name.Name = "p2Name";
         p2Name.PlaceholderText = "Enter Name";
         p2Name.Size = new Size(136, 31);
         p2Name.TabIndex = 10;
@@ -169,6 +169,7 @@ partial class Menu
         Margin = new Padding(5);
         Name = "Menu";
         Text = "Form1";
+  
         ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
         ResumeLayout(false);
         PerformLayout();

@@ -1,4 +1,5 @@
 using System.Windows.Forms;
+using static System.Windows.Forms.DataFormats;
 
 namespace Snake;
 
@@ -25,16 +26,44 @@ public partial class Menu : Form
 
     private void newGame_Click(object sender, EventArgs e)
     {
-        string name;
+        playerList = new List<Player>();
+
+        string name = "";
         if (p1Name.Text == null)
             name = "Snake 1";
+        else
+        {
+            name = p1Name.Text;
+        }
         if (p1Controller.SelectedItem == null)
             MessageBox.Show("Please choose a controller");
         else
         {
-            
-            //playerList.Add(name, p1Controller.SelectedItem.ToString(), );
+            Player p1 = new Player(name, (string)p1Controller.SelectedItem);
+            playerList.Add(p1);
 
+            if (p2Controller.SelectedItem != null && (string)p2Controller.SelectedItem != "Disabled")
+            {
+                if (p2Name.Text == null)
+                    name = "Snake 2";
+                else
+                {
+                    name = p2Name.Text;
+                }
+                Player p2 = new Player(name, (string)p2Controller.SelectedItem);
+                playerList.Add(p2);
+            }
+
+
+            //new form and ful screen
+            Form f2 = new Form();
+            f2.Size = new Size();
+            this.Hide();
+            f2.WindowState = FormWindowState.Normal;
+            f2.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            f2.Bounds = Screen.PrimaryScreen.Bounds;
+            f2.ShowDialog();
+            this.Close();
         }
     }
 
@@ -60,7 +89,7 @@ public partial class Menu : Form
         p2Controller.Items.Clear();
         p2Controller.Items.AddRange(controlList.ToArray<String>());
         p2Controller.Items.Remove(selectedItem);
-        p2Controller.SelectedIndex = 0;
+        p2Controller.SelectedItem = "Disabled";
 
         if (p2Controller.FindString("Disabled") == -1)
             p2Controller.Items.Add("Disabled");
@@ -74,4 +103,6 @@ public partial class Menu : Form
         p1Controller.Items.Remove(selectedItem);
         p1Controller.SelectedIndex = 0;
     }
+
+
 }
