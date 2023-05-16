@@ -5,65 +5,31 @@ namespace Snake;
 
 public partial class Menu : Form
 {
-    private List<Player> playerList;
-    private List<string> controlList;
+    private List<string> _controlList;
 
-   public Menu()
+    public Menu()
     {
         InitializeComponent();
-        // Players
-        playerList = new List<Player>();
-
         // Controllers
-        controlList = new List<string>();
-        controlList.Add("Keyboard (WASD)");
-        controlList.Add("Keyboard (Arrows)");
+        _controlList = new List<string>();
+        _controlList.Add("Keyboard (WASD)");
+        _controlList.Add("Keyboard (Arrows)");
         p1Controller.SelectedItem = p2Controller.SelectedItem = null;
         p1Controller.Text = p2Controller.Text = "Choose your controller:";
-        p1Controller.Items.AddRange(controlList.ToArray<String>());
-        p2Controller.Items.AddRange(controlList.ToArray<String>());
+        p1Controller.Items.AddRange(_controlList.ToArray<String>());
+        p2Controller.Items.AddRange(_controlList.ToArray<String>());
     }
 
     private void newGame_Click(object sender, EventArgs e)
     {
-        playerList = new List<Player>();
-
-        string name = "";
-        if (p1Name.Text == null)
-            name = "Snake 1";
-        else
-        {
-            name = p1Name.Text;
-        }
         if (p1Controller.SelectedItem == null)
             MessageBox.Show("Please choose a controller");
         else
         {
-            Player p1 = new Player(name, (string)p1Controller.SelectedItem);
-            playerList.Add(p1);
-
-            if (p2Controller.SelectedItem != null && (string)p2Controller.SelectedItem != "Disabled")
-            {
-                if (p2Name.Text == null)
-                    name = "Snake 2";
-                else
-                {
-                    name = p2Name.Text;
-                }
-                Player p2 = new Player(name, (string)p2Controller.SelectedItem);
-                playerList.Add(p2);
-            }
-
-
             //new Form and ful screen
-            Form board = new Board();
-            board.Size = new Size();
             this.Hide();
-            board.WindowState = FormWindowState.Normal;
-            board.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            board.Bounds = Screen.PrimaryScreen.Bounds;
+            Board board = new Board(this);
             board.ShowDialog();
-            this.Close();
         }
     }
 
@@ -82,12 +48,11 @@ public partial class Menu : Form
         Close();
     }
 
-
     private void p1Controller_SelectionChangeCommitted(object sender, EventArgs e)
     {
         object selectedItem = p1Controller.SelectedItem;
         p2Controller.Items.Clear();
-        p2Controller.Items.AddRange(controlList.ToArray<String>());
+        p2Controller.Items.AddRange(_controlList.ToArray<String>());
         p2Controller.Items.Remove(selectedItem);
         p2Controller.SelectedItem = "Disabled";
 
@@ -99,10 +64,164 @@ public partial class Menu : Form
     {
         object selectedItem = p2Controller.SelectedItem;
         p1Controller.Items.Clear();
-        p1Controller.Items.AddRange(controlList.ToArray<String>());
+        p1Controller.Items.AddRange(_controlList.ToArray<String>());
         p1Controller.Items.Remove(selectedItem);
         p1Controller.SelectedIndex = 0;
     }
 
+    public string getP1Name()
+    {
+        return p1Name.Text;
+    }
 
+    public string getP2Name()
+    {
+        return p2Name.Text;
+    }
+
+    public string getP1Controller()
+    {
+        return p1Controller.Text;
+    }
+
+    public string getP2Controller()
+    {
+        return p2Controller.Text;
+    }
+
+    private void p1Type0_Click(object sender, EventArgs e)
+    {
+        p1Type0.Enabled = false;
+        p1Type0.BackColor = Color.Green;
+        p1Type0.BackgroundImage = Snake.Properties.Resources.pixel_snake;
+        if (p1Type1.Enabled == false)
+        {
+            p1Type1.Enabled = true;
+            p1Type1.BackColor = Color.Red;
+            p1Type1.BackgroundImage = null;
+        }
+        if (p1Type2.Enabled == false)
+        {
+            p1Type2.Enabled = true;
+            p1Type2.BackColor = Color.Blue;
+            p1Type2.BackgroundImage = null;
+        }
+    }
+
+    private void p1Type1_Click(object sender, EventArgs e)
+    {
+        p1Type1.Enabled = false;
+        p1Type1.BackColor = Color.Brown;
+        p1Type1.BackgroundImage = Snake.Properties.Resources.pixel_snake;
+        if (p1Type0.Enabled == false)
+        {
+            p1Type0.Enabled = true;
+            p1Type0.BackColor = Color.LimeGreen;
+            p1Type0.BackgroundImage = null;
+        }
+        if (p1Type2.Enabled == false)
+        {
+            p1Type2.Enabled = true;
+            p1Type2.BackColor = Color.Blue;
+            p1Type2.BackgroundImage = null;
+        }
+    }
+
+    private void p1Type2_Click(object sender, EventArgs e)
+    {
+        p1Type2.Enabled = false;
+        p1Type2.BackColor = Color.DarkBlue;
+        p1Type2.BackgroundImage = Snake.Properties.Resources.pixel_snake;
+        if (p1Type0.Enabled == false)
+        {
+            p1Type0.Enabled = true;
+            p1Type0.BackColor = Color.LimeGreen;
+            p1Type0.BackgroundImage = null;
+        }
+        if (p1Type1.Enabled == false)
+        {
+            p1Type1.Enabled = true;
+            p1Type1.BackColor = Color.Red;
+            p1Type1.BackgroundImage = null;
+        }
+    }
+
+    private void p2Type0_Click(object sender, EventArgs e)
+    {
+        p2Type0.Enabled = false;
+        p2Type0.BackColor = Color.Green;
+        p2Type0.BackgroundImage = Snake.Properties.Resources.pixel_snake;
+        if (p2Type1.Enabled == false)
+        {
+            p2Type1.Enabled = true;
+            p2Type1.BackColor = Color.Red;
+            p2Type1.BackgroundImage = null;
+        }
+        if (p2Type2.Enabled == false)
+        {
+            p2Type2.Enabled = true;
+            p2Type2.BackColor = Color.Blue;
+            p2Type2.BackgroundImage = null;
+        }
+    }
+
+    private void p2Type1_Click(object sender, EventArgs e)
+    {
+        p2Type1.Enabled = false;
+        p2Type1.BackColor = Color.Brown;
+        p2Type1.BackgroundImage = Snake.Properties.Resources.pixel_snake;
+        if (p2Type0.Enabled == false)
+        {
+            p2Type0.Enabled = true;
+            p2Type0.BackColor = Color.LimeGreen;
+            p2Type0.BackgroundImage = null;
+        }
+        if (p2Type2.Enabled == false)
+        {
+            p2Type2.Enabled = true;
+            p2Type2.BackColor = Color.Blue;
+            p2Type2.BackgroundImage = null;
+        }
+    }
+
+    private void p2Type2_Click(object sender, EventArgs e)
+    {
+        p2Type2.Enabled = false;
+        p2Type2.BackColor = Color.DarkBlue;
+        p2Type2.BackgroundImage = Snake.Properties.Resources.pixel_snake;
+        if (p2Type0.Enabled == false)
+        {
+            p2Type0.Enabled = true;
+            p2Type0.BackColor = Color.LimeGreen;
+            p2Type0.BackgroundImage = null;
+        }
+        if (p2Type1.Enabled == false)
+        {
+            p2Type1.Enabled = true;
+            p2Type1.BackColor = Color.Red;
+            p2Type1.BackgroundImage = null;
+        }
+    }
+
+    public int getP1Type()
+    {
+        if (!p1Type0.Enabled)
+            return 0;
+        if (!p1Type1.Enabled)
+            return 1;
+        if (!p1Type2.Enabled)
+            return 2;
+        return 0;
+    }
+
+    public int getP2Type()
+    {
+        if (!p2Type0.Enabled)
+            return 0;
+        if (!p2Type1.Enabled)
+            return 1;
+        if (!p2Type2.Enabled)
+            return 2;
+        return 1;
+    }
 }
