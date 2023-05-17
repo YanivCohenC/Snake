@@ -8,6 +8,11 @@ namespace Snake
 {
     internal class Food : Slot
     {
+        private protected int _time;
 
+        public int getTime()
+        {
+            return _time;
+        }
     }
 }

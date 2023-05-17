@@ -1,15 +1,14 @@
 ﻿namespace Snake
 {
-    internal class Player : Board
+    internal class Player
     {
-        private static Menu other;
         private string _playerName;
         private int _playerScore;
         private int _snakeType;
         private string _playerInput;
 
 
-        public Player(string playerName, string playerInput, int snakeType = 0, int playerScore = 0) : base(other)
+        public Player(string playerName, string playerInput, int snakeType = 0, int playerScore = 0)
         {
             _playerName = playerName;
             _playerScore = playerScore;

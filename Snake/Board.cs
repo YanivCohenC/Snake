@@ -16,6 +16,11 @@ namespace Snake
 {
     public partial class Board : Form
     {
+        public const int ROWS = 20;
+        public const int COLS = 20;
+        public const int SIZE_X = 50;
+        public const int SIZE_Y = 50;
+
         private Menu mainMenu;
         private List<Player> _playerList;
         private Slot[,] _gameMatrix;
@@ -25,10 +30,7 @@ namespace Snake
             InitializeComponent();
             mainMenu = other;
             _playerList = new List<Player>();
-            _gameMatrix = new Slot[10, 10];
-            for (int i = 0; i < 10; i++)
-                for (int j = 0; j < 10; j++)
-                    _gameMatrix[i, j] = new Slot();
+            _gameMatrix = new Slot[ROWS, COLS];
         }
 
         private void Board_Load(object sender, EventArgs e)
@@ -49,10 +51,10 @@ namespace Snake
                 Player p2 = new Player(p1Name, p2Controller, mainMenu.getP2Type());
                 _playerList.Add(p2);
             }
-            
-            
-            readMatrix();
-            
+
+            initializeMatrix();
+            //readMatrix();
+
         }
 
         private void Board_FormClosed(object sender, FormClosedEventArgs e)
@@ -63,34 +65,41 @@ namespace Snake
             mainMenu.Show();
         }
 
-        private void allocateMatrix()
+        private void initializeMatrix()
         {
-            
+            this.AutoScroll = true;
+            int y = 0;
+            for (int i = 0; i < ROWS; i++)
+            {
+                for (int j = 0; j < COLS; j++)
+                {
+                    if (_gameMatrix[i, j] == null) // Case empty slot
+                    {
+                        _gameMatrix[i, j] = new Slot();
+                        this.Controls.Add(_gameMatrix[i, j].getPicture());
+                        _gameMatrix[i, j].getPicture().Location = new Point(i * SIZE_X + 300, j * SIZE_Y + 175);
+                        _gameMatrix[i, j].getPicture().Size = new Size(SIZE_X, SIZE_Y);
+                    }
+                }
+            }
         }
 
         private void readMatrix()
         {
             // For confirm visibility of all images set 
-            this.AutoScroll = true;
-            int y = 0;
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
+            //int y = 0;
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    for (int j = 0; j < 10; j++)
+            //    {
+            //        if ()
 
 
-                    this.Controls.Add(_gameMatrix[i,j].getPicture());
-                    // Following three lines set the images(picture boxes) locations
-                    if (i % 100 == 0)
-                       y += 100; // 3 images per rows, first image will be at (20,150)
-                    _gameMatrix[i,j].getPicture().Image = Snake.Properties.Resources.Empty;
+            //        // Following three lines set the images(picture boxes) locations
 
-                     _gameMatrix[i, j].getPicture().Location = new Point(i * 100, y);
+            //    }
 
-                    _gameMatrix[i, j].getPicture().Size = new Size(100, 100);
-                }
-                
-            }
+            //}
         }
     }
 }

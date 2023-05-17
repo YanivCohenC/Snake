@@ -50,19 +50,19 @@ partial class Menu
         // 
         // pictureBox1
         // 
-        pictureBox1.Location = new Point(249, 34);
-        pictureBox1.Margin = new Padding(5);
+        pictureBox1.BackgroundImageLayout = ImageLayout.Stretch;
+        pictureBox1.Location = new Point(324, 44);
+        pictureBox1.Margin = new Padding(6);
         pictureBox1.Name = "pictureBox1";
-        pictureBox1.Size = new Size(666, 273);
+        pictureBox1.Size = new Size(866, 349);
         pictureBox1.TabIndex = 0;
         pictureBox1.TabStop = false;
         // 
         // button1
         // 
-        button1.Location = new Point(457, 353);
-        button1.Margin = new Padding(2);
+        button1.Location = new Point(594, 452);
         button1.Name = "button1";
-        button1.Size = new Size(245, 75);
+        button1.Size = new Size(318, 96);
         button1.TabIndex = 1;
         button1.Text = "New Game";
         button1.UseVisualStyleBackColor = true;
@@ -71,30 +71,27 @@ partial class Menu
         // button2
         // 
         button2.Enabled = false;
-        button2.Location = new Point(457, 433);
-        button2.Margin = new Padding(2);
+        button2.Location = new Point(594, 554);
         button2.Name = "button2";
-        button2.Size = new Size(245, 75);
+        button2.Size = new Size(318, 96);
         button2.TabIndex = 2;
         button2.Text = "Continue";
         button2.UseVisualStyleBackColor = true;
         // 
         // button3
         // 
-        button3.Location = new Point(457, 512);
-        button3.Margin = new Padding(2);
+        button3.Location = new Point(594, 655);
         button3.Name = "button3";
-        button3.Size = new Size(245, 75);
+        button3.Size = new Size(318, 96);
         button3.TabIndex = 3;
         button3.Text = "Scoreboard";
         button3.UseVisualStyleBackColor = true;
         // 
         // button4
         // 
-        button4.Location = new Point(457, 592);
-        button4.Margin = new Padding(2);
+        button4.Location = new Point(594, 758);
         button4.Name = "button4";
-        button4.Size = new Size(245, 75);
+        button4.Size = new Size(318, 96);
         button4.TabIndex = 4;
         button4.Text = "Quit";
         button4.UseVisualStyleBackColor = true;
@@ -103,9 +100,10 @@ partial class Menu
         // p1Controller
         // 
         p1Controller.FormattingEnabled = true;
-        p1Controller.Location = new Point(103, 433);
+        p1Controller.Location = new Point(134, 554);
+        p1Controller.Margin = new Padding(4);
         p1Controller.Name = "p1Controller";
-        p1Controller.Size = new Size(220, 33);
+        p1Controller.Size = new Size(285, 40);
         p1Controller.TabIndex = 5;
         p1Controller.Text = "Choose your controller:";
         p1Controller.SelectionChangeCommitted += p1Controller_SelectionChangeCommitted;
@@ -113,54 +111,60 @@ partial class Menu
         // label1
         // 
         label1.AutoSize = true;
-        label1.Location = new Point(103, 389);
+        label1.Location = new Point(134, 498);
+        label1.Margin = new Padding(4, 0, 4, 0);
         label1.Name = "label1";
-        label1.Size = new Size(78, 25);
+        label1.Size = new Size(103, 32);
         label1.TabIndex = 6;
         label1.Text = "Player 1:";
         // 
         // label2
         // 
         label2.AutoSize = true;
-        label2.Location = new Point(855, 389);
+        label2.Location = new Point(1112, 498);
+        label2.Margin = new Padding(4, 0, 4, 0);
         label2.Name = "label2";
-        label2.Size = new Size(78, 25);
+        label2.Size = new Size(103, 32);
         label2.TabIndex = 8;
         label2.Text = "Player 2:";
         // 
         // p2Controller
         // 
         p2Controller.FormattingEnabled = true;
-        p2Controller.Location = new Point(855, 433);
+        p2Controller.Location = new Point(1112, 554);
+        p2Controller.Margin = new Padding(4);
         p2Controller.Name = "p2Controller";
-        p2Controller.Size = new Size(220, 33);
+        p2Controller.Size = new Size(285, 40);
         p2Controller.TabIndex = 7;
         p2Controller.Text = "Choose your controller:";
         p2Controller.SelectionChangeCommitted += p2Controller_SelectionChangeCommitted;
         // 
         // p1Name
         // 
-        p1Name.Location = new Point(187, 386);
+        p1Name.Location = new Point(243, 494);
+        p1Name.Margin = new Padding(4);
         p1Name.Name = "p1Name";
         p1Name.PlaceholderText = "Enter Name";
-        p1Name.Size = new Size(136, 31);
+        p1Name.Size = new Size(176, 39);
         p1Name.TabIndex = 9;
         // 
         // p2Name
         // 
-        p2Name.Location = new Point(939, 386);
+        p2Name.Location = new Point(1221, 494);
+        p2Name.Margin = new Padding(4);
         p2Name.Name = "p2Name";
         p2Name.PlaceholderText = "Enter Name";
-        p2Name.Size = new Size(136, 31);
+        p2Name.Size = new Size(176, 39);
         p2Name.TabIndex = 10;
         // 
         // p1Type0
         // 
         p1Type0.BackColor = Color.LimeGreen;
         p1Type0.BackgroundImageLayout = ImageLayout.Center;
-        p1Type0.Location = new Point(103, 474);
+        p1Type0.Location = new Point(134, 607);
+        p1Type0.Margin = new Padding(4);
         p1Type0.Name = "p1Type0";
-        p1Type0.Size = new Size(53, 52);
+        p1Type0.Size = new Size(69, 67);
         p1Type0.TabIndex = 11;
         p1Type0.UseVisualStyleBackColor = false;
         p1Type0.Click += p1Type0_Click;
@@ -169,9 +173,10 @@ partial class Menu
         // 
         p1Type1.BackColor = Color.Red;
         p1Type1.BackgroundImageLayout = ImageLayout.Center;
-        p1Type1.Location = new Point(187, 474);
+        p1Type1.Location = new Point(243, 607);
+        p1Type1.Margin = new Padding(4);
         p1Type1.Name = "p1Type1";
-        p1Type1.Size = new Size(53, 52);
+        p1Type1.Size = new Size(69, 67);
         p1Type1.TabIndex = 12;
         p1Type1.UseVisualStyleBackColor = false;
         p1Type1.Click += p1Type1_Click;
@@ -180,9 +185,10 @@ partial class Menu
         // 
         p1Type2.BackColor = Color.Blue;
         p1Type2.BackgroundImageLayout = ImageLayout.Center;
-        p1Type2.Location = new Point(270, 474);
+        p1Type2.Location = new Point(351, 607);
+        p1Type2.Margin = new Padding(4);
         p1Type2.Name = "p1Type2";
-        p1Type2.Size = new Size(53, 52);
+        p1Type2.Size = new Size(69, 67);
         p1Type2.TabIndex = 13;
         p1Type2.UseVisualStyleBackColor = false;
         p1Type2.Click += p1Type2_Click;
@@ -191,9 +197,10 @@ partial class Menu
         // 
         p2Type2.BackColor = Color.Blue;
         p2Type2.BackgroundImageLayout = ImageLayout.Center;
-        p2Type2.Location = new Point(1022, 474);
+        p2Type2.Location = new Point(1329, 607);
+        p2Type2.Margin = new Padding(4);
         p2Type2.Name = "p2Type2";
-        p2Type2.Size = new Size(53, 52);
+        p2Type2.Size = new Size(69, 67);
         p2Type2.TabIndex = 16;
         p2Type2.UseVisualStyleBackColor = false;
         p2Type2.Click += p2Type2_Click;
@@ -202,9 +209,10 @@ partial class Menu
         // 
         p2Type1.BackColor = Color.Red;
         p2Type1.BackgroundImageLayout = ImageLayout.Center;
-        p2Type1.Location = new Point(939, 474);
+        p2Type1.Location = new Point(1221, 607);
+        p2Type1.Margin = new Padding(4);
         p2Type1.Name = "p2Type1";
-        p2Type1.Size = new Size(53, 52);
+        p2Type1.Size = new Size(69, 67);
         p2Type1.TabIndex = 15;
         p2Type1.UseVisualStyleBackColor = false;
         p2Type1.Click += p2Type1_Click;
@@ -213,19 +221,20 @@ partial class Menu
         // 
         p2Type0.BackColor = Color.FromArgb(0, 192, 0);
         p2Type0.BackgroundImageLayout = ImageLayout.Center;
-        p2Type0.Location = new Point(855, 474);
+        p2Type0.Location = new Point(1112, 607);
+        p2Type0.Margin = new Padding(4);
         p2Type0.Name = "p2Type0";
-        p2Type0.Size = new Size(53, 52);
+        p2Type0.Size = new Size(69, 67);
         p2Type0.TabIndex = 14;
         p2Type0.UseVisualStyleBackColor = false;
         p2Type0.Click += p2Type0_Click;
         // 
         // Menu
         // 
-        AutoScaleDimensions = new SizeF(10F, 25F);
+        AutoScaleDimensions = new SizeF(13F, 32F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = SystemColors.Control;
-        ClientSize = new Size(1178, 720);
+        ClientSize = new Size(1531, 922);
         Controls.Add(p2Type2);
         Controls.Add(p2Type1);
         Controls.Add(p2Type0);
@@ -243,8 +252,9 @@ partial class Menu
         Controls.Add(button2);
         Controls.Add(button1);
         Controls.Add(pictureBox1);
-        Margin = new Padding(5);
+        Margin = new Padding(6);
         Name = "Menu";
+        StartPosition = FormStartPosition.CenterScreen;
         Text = "Form1";
         ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
         ResumeLayout(false);

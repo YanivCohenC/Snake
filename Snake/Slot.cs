@@ -8,11 +8,13 @@ namespace Snake
 {
     internal class Slot
     {
-        private PictureBox _image;
+        private protected PictureBox _image;
 
         public Slot()
         {
             _image = new PictureBox();
+            _image.BackgroundImage = Snake.Properties.Resources.Empty;
+            _image.BackgroundImageLayout = ImageLayout.Stretch;
         }
         public PictureBox getPicture()
         {

@@ -8,9 +8,14 @@ namespace Snake
 {
     internal class Apple : Food
     {
-        public void effect()
+        public Apple()
         {
+            _image.BackgroundImage = Snake.Properties.Resources.Apple;
+        }
 
+        public int effect()
+        {
+            return 1;
         }
     }
 }
