@@ -5,6 +5,11 @@ namespace Snake;
 
 public partial class Menu : Form
 {
+    private const int CB_SETCUEBANNER = 0x1703;
+
+    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+    private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)] string lParam);
+
     private List<string> _controlList;
 
     public Menu()
@@ -15,6 +20,9 @@ public partial class Menu : Form
         _controlList.Add("Keyboard (WASD)");
         _controlList.Add("Keyboard (Arrows)");
         p1Controller.SelectedItem = p2Controller.SelectedItem = null;
+        SendMessage(this.p1Controller.Handle, CB_SETCUEBANNER, 0, "Choose your controller:");
+        SendMessage(this.p2Controller.Handle, CB_SETCUEBANNER, 0, "Choose your controller:");
+
         p1Controller.Text = p2Controller.Text = "Choose your controller:";
         p1Controller.Items.AddRange(_controlList.ToArray<String>());
         p2Controller.Items.AddRange(_controlList.ToArray<String>());

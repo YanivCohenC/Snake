@@ -28,85 +28,104 @@
         /// </summary>
         private void InitializeComponent()
         {
-            p1name_b = new Label();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
+            p1NameLabel = new Label();
+            p2NameLabel = new Label();
+            p1ScoreLabel1 = new Label();
+            p2ScoreLabel1 = new Label();
+            p1ScoreLabel2 = new Label();
+            p2ScoreLabel2 = new Label();
+            countdownLabel = new Label();
             SuspendLayout();
             // 
-            // p1name_b
+            // p1NameLabel
             // 
-            p1name_b.AutoSize = true;
-            p1name_b.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            p1name_b.ForeColor = Color.White;
-            p1name_b.Location = new Point(16, 12);
-            p1name_b.Margin = new Padding(4, 0, 4, 0);
-            p1name_b.Name = "p1name_b";
-            p1name_b.Size = new Size(152, 51);
-            p1name_b.TabIndex = 0;
-            p1name_b.Text = "Snake 1";
+            p1NameLabel.AutoSize = true;
+            p1NameLabel.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            p1NameLabel.ForeColor = Color.White;
+            p1NameLabel.Location = new Point(16, 12);
+            p1NameLabel.Margin = new Padding(4, 0, 4, 0);
+            p1NameLabel.Name = "p1NameLabel";
+            p1NameLabel.Size = new Size(152, 51);
+            p1NameLabel.TabIndex = 0;
+            p1NameLabel.Text = "Snake 1";
+            p1NameLabel.Visible = false;
             // 
-            // label1
+            // p2NameLabel
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            label1.ForeColor = Color.White;
-            label1.Location = new Point(1452, 12);
-            label1.Margin = new Padding(4, 0, 4, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(152, 51);
-            label1.TabIndex = 1;
-            label1.Text = "Snake 2";
+            p2NameLabel.AutoSize = true;
+            p2NameLabel.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            p2NameLabel.ForeColor = Color.White;
+            p2NameLabel.Location = new Point(1452, 12);
+            p2NameLabel.Margin = new Padding(4, 0, 4, 0);
+            p2NameLabel.Name = "p2NameLabel";
+            p2NameLabel.Size = new Size(152, 51);
+            p2NameLabel.TabIndex = 1;
+            p2NameLabel.Text = "Snake 2";
+            p2NameLabel.Visible = false;
             // 
-            // label2
+            // p1ScoreLabel1
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            label2.ForeColor = Color.White;
-            label2.Location = new Point(16, 60);
-            label2.Margin = new Padding(4, 0, 4, 0);
-            label2.Name = "label2";
-            label2.Size = new Size(123, 51);
-            label2.TabIndex = 2;
-            label2.Text = "Score:";
+            p1ScoreLabel1.AutoSize = true;
+            p1ScoreLabel1.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            p1ScoreLabel1.ForeColor = Color.White;
+            p1ScoreLabel1.Location = new Point(16, 60);
+            p1ScoreLabel1.Margin = new Padding(4, 0, 4, 0);
+            p1ScoreLabel1.Name = "p1ScoreLabel1";
+            p1ScoreLabel1.Size = new Size(123, 51);
+            p1ScoreLabel1.TabIndex = 2;
+            p1ScoreLabel1.Text = "Score:";
+            p1ScoreLabel1.Visible = false;
             // 
-            // label3
+            // p2ScoreLabel1
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            label3.ForeColor = Color.White;
-            label3.Location = new Point(1452, 60);
-            label3.Margin = new Padding(4, 0, 4, 0);
-            label3.Name = "label3";
-            label3.Size = new Size(123, 51);
-            label3.TabIndex = 3;
-            label3.Text = "Score:";
+            p2ScoreLabel1.AutoSize = true;
+            p2ScoreLabel1.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            p2ScoreLabel1.ForeColor = Color.White;
+            p2ScoreLabel1.Location = new Point(1452, 60);
+            p2ScoreLabel1.Margin = new Padding(4, 0, 4, 0);
+            p2ScoreLabel1.Name = "p2ScoreLabel1";
+            p2ScoreLabel1.Size = new Size(123, 51);
+            p2ScoreLabel1.TabIndex = 3;
+            p2ScoreLabel1.Text = "Score:";
+            p2ScoreLabel1.Visible = false;
             // 
-            // label4
+            // p1ScoreLabel2
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            label4.ForeColor = Color.White;
-            label4.Location = new Point(123, 60);
-            label4.Margin = new Padding(4, 0, 4, 0);
-            label4.Name = "label4";
-            label4.Size = new Size(42, 51);
-            label4.TabIndex = 4;
-            label4.Text = "0";
+            p1ScoreLabel2.AutoSize = true;
+            p1ScoreLabel2.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            p1ScoreLabel2.ForeColor = Color.White;
+            p1ScoreLabel2.Location = new Point(123, 60);
+            p1ScoreLabel2.Margin = new Padding(4, 0, 4, 0);
+            p1ScoreLabel2.Name = "p1ScoreLabel2";
+            p1ScoreLabel2.Size = new Size(42, 51);
+            p1ScoreLabel2.TabIndex = 4;
+            p1ScoreLabel2.Text = "0";
+            p1ScoreLabel2.Visible = false;
             // 
-            // label5
+            // p2ScoreLabel2
             // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            label5.ForeColor = Color.White;
-            label5.Location = new Point(1559, 60);
-            label5.Margin = new Padding(4, 0, 4, 0);
-            label5.Name = "label5";
-            label5.Size = new Size(42, 51);
-            label5.TabIndex = 5;
-            label5.Text = "0";
+            p2ScoreLabel2.AutoSize = true;
+            p2ScoreLabel2.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            p2ScoreLabel2.ForeColor = Color.White;
+            p2ScoreLabel2.Location = new Point(1559, 60);
+            p2ScoreLabel2.Margin = new Padding(4, 0, 4, 0);
+            p2ScoreLabel2.Name = "p2ScoreLabel2";
+            p2ScoreLabel2.Size = new Size(42, 51);
+            p2ScoreLabel2.TabIndex = 5;
+            p2ScoreLabel2.Text = "0";
+            p2ScoreLabel2.Visible = false;
+            // 
+            // countdownLabel
+            // 
+            countdownLabel.AutoSize = true;
+            countdownLabel.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            countdownLabel.ForeColor = Color.White;
+            countdownLabel.Location = new Point(622, 60);
+            countdownLabel.Margin = new Padding(4, 0, 4, 0);
+            countdownLabel.Name = "countdownLabel";
+            countdownLabel.Size = new Size(347, 51);
+            countdownLabel.TabIndex = 6;
+            countdownLabel.Text = "Game will start in: 5";
             // 
             // Board
             // 
@@ -114,29 +133,34 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(0, 0, 40);
             ClientSize = new Size(1635, 1239);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(p1name_b);
+            Controls.Add(countdownLabel);
+            Controls.Add(p2ScoreLabel2);
+            Controls.Add(p1ScoreLabel2);
+            Controls.Add(p2ScoreLabel1);
+            Controls.Add(p1ScoreLabel1);
+            Controls.Add(p2NameLabel);
+            Controls.Add(p1NameLabel);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Margin = new Padding(4);
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Board";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Board";
             FormClosed += Board_FormClosed;
             Load += Board_Load;
+            Shown += Board_Shown;
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private Label p1name_b;
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
-        private Label label5;
+        private Label p1NameLabel;
+        private Label p2NameLabel;
+        private Label p1ScoreLabel1;
+        private Label p2ScoreLabel1;
+        private Label p1ScoreLabel2;
+        private Label p2ScoreLabel2;
+        private Label countdownLabel;
     }
 }

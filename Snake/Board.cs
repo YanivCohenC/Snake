@@ -11,6 +11,7 @@ using System.IO;
 using System.Xml.Linq;
 using static System.Windows.Forms.DataFormats;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Snake
 {
@@ -22,12 +23,19 @@ namespace Snake
         public const int SIZE_Y = 50;
 
         private Menu mainMenu;
-        private List<Player> _playerList;
-        private Slot[,] _gameMatrix;
+        private List<Player> _playerList; // For scoreboard
+        private Slot[,] _gameMatrix; // For all of the elements on board
+        private List<snakeBody> _p1Session; // p1 brain
+        private List<snakeBody> _p2Session;
+
+        private Timer countdownTimer;
+        private Timer boardTimer;
 
         public Board(Menu other)
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+
             mainMenu = other;
             _playerList = new List<Player>();
             _gameMatrix = new Slot[ROWS, COLS];
@@ -35,25 +43,70 @@ namespace Snake
 
         private void Board_Load(object sender, EventArgs e)
         {
-            string p1Name = mainMenu.getP1Name();
-            string p2Name = mainMenu.getP2Name();
+            string p1Name = p1NameLabel.Text = mainMenu.getP1Name();
+            string p2Name = p2NameLabel.Text = mainMenu.getP2Name();
             string p2Controller = mainMenu.getP2Controller();
 
             if (p1Name == "")
-                p1Name = "Snake 1";
+            {
+                p1NameLabel.Text = p1Name = "Snake 1";
+            }
+
             Player p1 = new Player(p1Name, mainMenu.getP1Controller(), mainMenu.getP1Type());
             _playerList.Add(p1);
-            if (p2Controller != "Choose your controller:" && p2Controller != "Disabled")
+            _p1Session = new List<snakeBody>();
+            _p1Session.Add(new snakeBody(true, p1.getPlayerType()));
+            p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
+            if (p2Controller != "" && p2Controller != "Disabled")
             {
                 if (p2Name == "")
-                    p2Name = "Snake 2";
+                {
+                    p2NameLabel.Text = p2Name = "Snake 2";
+                }
+
 
                 Player p2 = new Player(p1Name, p2Controller, mainMenu.getP2Type());
                 _playerList.Add(p2);
+                p2NameLabel.Visible = p2ScoreLabel1.Visible = p2ScoreLabel2.Visible = true;
             }
-
             initializeMatrix();
+
+            countdownTimer = new System.Windows.Forms.Timer();
+            countdownTimer.Interval = 1000; // 1 second
+            countdownTimer.Tick += countDown_Tick;
+            countdownTimer.Start();
+
+            
+
+
             //readMatrix();
+        }
+
+        private void Board_Shown(object sender, EventArgs e)
+        {
+            boardTimer = new System.Windows.Forms.Timer();
+            boardTimer.Interval = 500; // 0.5 second
+            boardTimer.Tick += boardTimer_Tick;
+            boardTimer.Start();
+        }
+
+
+        static int count = 5;
+        private void countDown_Tick(object sender, EventArgs e)
+        {
+            count--;
+            countdownLabel.Text = "Game will start in: " + count;
+
+            if (count == 0)
+            {
+                countdownTimer.Stop();
+                countdownLabel.Hide();
+                // Start the game here
+            }
+        }
+
+        private void boardTimer_Tick(object sender, EventArgs e)
+        {
 
         }
 
@@ -77,7 +130,7 @@ namespace Snake
                     {
                         _gameMatrix[i, j] = new Slot();
                         this.Controls.Add(_gameMatrix[i, j].getPicture());
-                        _gameMatrix[i, j].getPicture().Location = new Point(i * SIZE_X + 300, j * SIZE_Y + 175);
+                        _gameMatrix[i, j].getPicture().Location = new Point(i * SIZE_X + 330, j * SIZE_Y + 175);
                         _gameMatrix[i, j].getPicture().Size = new Size(SIZE_X, SIZE_Y);
                     }
                 }

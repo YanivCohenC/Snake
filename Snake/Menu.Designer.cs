@@ -99,13 +99,13 @@ partial class Menu
         // 
         // p1Controller
         // 
+        p1Controller.DropDownStyle = ComboBoxStyle.DropDownList;
         p1Controller.FormattingEnabled = true;
         p1Controller.Location = new Point(134, 554);
         p1Controller.Margin = new Padding(4);
         p1Controller.Name = "p1Controller";
-        p1Controller.Size = new Size(285, 40);
+        p1Controller.Size = new Size(295, 40);
         p1Controller.TabIndex = 5;
-        p1Controller.Text = "Choose your controller:";
         p1Controller.SelectionChangeCommitted += p1Controller_SelectionChangeCommitted;
         // 
         // label1
@@ -130,31 +130,33 @@ partial class Menu
         // 
         // p2Controller
         // 
+        p2Controller.DropDownStyle = ComboBoxStyle.DropDownList;
         p2Controller.FormattingEnabled = true;
         p2Controller.Location = new Point(1112, 554);
         p2Controller.Margin = new Padding(4);
         p2Controller.Name = "p2Controller";
-        p2Controller.Size = new Size(285, 40);
+        p2Controller.Size = new Size(295, 40);
         p2Controller.TabIndex = 7;
-        p2Controller.Text = "Choose your controller:";
         p2Controller.SelectionChangeCommitted += p2Controller_SelectionChangeCommitted;
         // 
         // p1Name
         // 
         p1Name.Location = new Point(243, 494);
         p1Name.Margin = new Padding(4);
+        p1Name.MaxLength = 13;
         p1Name.Name = "p1Name";
         p1Name.PlaceholderText = "Enter Name";
-        p1Name.Size = new Size(176, 39);
+        p1Name.Size = new Size(186, 39);
         p1Name.TabIndex = 9;
         // 
         // p2Name
         // 
         p2Name.Location = new Point(1221, 494);
         p2Name.Margin = new Padding(4);
+        p2Name.MaxLength = 13;
         p2Name.Name = "p2Name";
         p2Name.PlaceholderText = "Enter Name";
-        p2Name.Size = new Size(176, 39);
+        p2Name.Size = new Size(186, 39);
         p2Name.TabIndex = 10;
         // 
         // p1Type0
