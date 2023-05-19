@@ -19,8 +19,8 @@ namespace Snake
     {
         public const int ROWS = 20;
         public const int COLS = 20;
-        public const int SIZE_X = 50;
-        public const int SIZE_Y = 50;
+        public const int SIZE_X = 32;
+        public const int SIZE_Y = 32;
 
         private Menu mainMenu;
         private List<Player> _playerList; // For scoreboard
@@ -54,8 +54,10 @@ namespace Snake
 
             Player p1 = new Player(p1Name, mainMenu.getP1Controller(), mainMenu.getP1Type());
             _playerList.Add(p1);
-            _p1Session = new List<snakeBody>();
-            _p1Session.Add(new snakeBody(true, p1.getPlayerType()));
+            _p1Session = new List<snakeBody>
+            {
+                new snakeBody(true, p1.getPlayerType())
+            };
             p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
             if (p2Controller != "" && p2Controller != "Disabled")
             {
@@ -76,7 +78,7 @@ namespace Snake
             countdownTimer.Tick += countDown_Tick;
             countdownTimer.Start();
 
-            
+
 
 
             //readMatrix();
@@ -130,7 +132,7 @@ namespace Snake
                     {
                         _gameMatrix[i, j] = new Slot();
                         this.Controls.Add(_gameMatrix[i, j].getPicture());
-                        _gameMatrix[i, j].getPicture().Location = new Point(i * SIZE_X + 330, j * SIZE_Y + 175);
+                        _gameMatrix[i, j].getPicture().Location = new Point(i * SIZE_X + 200, j * SIZE_Y + 75);
                         _gameMatrix[i, j].getPicture().Size = new Size(SIZE_X, SIZE_Y);
                     }
                 }
