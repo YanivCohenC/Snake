@@ -112,6 +112,46 @@ namespace Snake
 
         }
 
+        private void Board_KeyDown(object sender, KeyEventArgs e, string keyController, int position)
+        {
+            if (e.KeyCode == Keys.A)
+            {
+                if (position == 0) 
+                    position = 1;
+                if (position == 1)
+                    position = 0;
+            }
+            if (e.KeyCode == Keys.D)
+            { 
+                if (position == 0)
+                    position = 2;
+                if (position == 2)
+                    position = 0;
+            }
+            if (e.KeyCode == Keys.W)
+            {
+                if (position == 1 || position == 2)
+                    position = 3;
+            }
+            if (e.KeyCode==Keys.S)
+            {
+                if (position == 1 || position == 2)
+                    position = 0;
+            }
+
+            switch (position)
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+        }
+
         private void Board_FormClosed(object sender, FormClosedEventArgs e)
         {
             // save data after game

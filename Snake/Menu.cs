@@ -8,6 +8,7 @@ public partial class Menu : Form
     private const int CB_SETCUEBANNER = 0x1703;
 
     [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+
     private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)] string lParam);
 
     private List<string> _controlList;

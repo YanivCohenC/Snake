@@ -118,6 +118,8 @@ partial class Menu
         // label1
         // 
         label1.AutoSize = true;
+        label1.BackColor = Color.Transparent;
+        label1.ForeColor = Color.White;
         label1.Location = new Point(187, 355);
         label1.Margin = new Padding(2, 0, 2, 0);
         label1.Name = "label1";
@@ -128,6 +130,8 @@ partial class Menu
         // label2
         // 
         label2.AutoSize = true;
+        label2.BackColor = Color.Transparent;
+        label2.ForeColor = Color.White;
         label2.Location = new Point(787, 355);
         label2.Margin = new Padding(2, 0, 2, 0);
         label2.Name = "label2";
@@ -241,6 +245,8 @@ partial class Menu
         // label3
         // 
         label3.AutoSize = true;
+        label3.BackColor = Color.Transparent;
+        label3.ForeColor = Color.Transparent;
         label3.Location = new Point(687, 402);
         label3.Margin = new Padding(2, 0, 2, 0);
         label3.Name = "label3";
@@ -251,6 +257,8 @@ partial class Menu
         // label4
         // 
         label4.AutoSize = true;
+        label4.BackColor = Color.Transparent;
+        label4.ForeColor = Color.Transparent;
         label4.Location = new Point(687, 459);
         label4.Margin = new Padding(2, 0, 2, 0);
         label4.Name = "label4";
@@ -261,6 +269,8 @@ partial class Menu
         // label5
         // 
         label5.AutoSize = true;
+        label5.BackColor = Color.Transparent;
+        label5.ForeColor = Color.White;
         label5.Location = new Point(87, 402);
         label5.Margin = new Padding(2, 0, 2, 0);
         label5.Name = "label5";
@@ -271,6 +281,8 @@ partial class Menu
         // label6
         // 
         label6.AutoSize = true;
+        label6.BackColor = Color.Transparent;
+        label6.ForeColor = Color.Transparent;
         label6.Location = new Point(87, 459);
         label6.Margin = new Padding(2, 0, 2, 0);
         label6.Name = "label6";
@@ -283,6 +295,8 @@ partial class Menu
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = SystemColors.Control;
+        BackgroundImage = Properties.Resources.backGMenu;
+        BackgroundImageLayout = ImageLayout.Stretch;
         ClientSize = new Size(1024, 768);
         Controls.Add(label6);
         Controls.Add(label5);
@@ -305,6 +319,7 @@ partial class Menu
         Controls.Add(button2);
         Controls.Add(button1);
         Controls.Add(pictureBox1);
+        DoubleBuffered = true;
         FormBorderStyle = FormBorderStyle.None;
         Name = "Menu";
         StartPosition = FormStartPosition.CenterScreen;

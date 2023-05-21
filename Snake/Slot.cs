@@ -20,5 +20,31 @@ namespace Snake
         {
             return _image;
         }
+        private void randomFood()
+        {
+            int i, j;
+            int foodType;
+            Random rnd = new Random();
+            i = rnd.Next(25);
+            j = rnd.Next(25);
+            foodType = rnd.Next(3);
+
+            switch (foodType)
+            {
+                case 0:
+                    _image = new PictureBox();
+                    _image.BackgroundImage = Snake.Properties.Resources.Apple;
+                    break;
+                case 1:
+                    _image = new PictureBox();
+                    _image.BackgroundImage = Snake.Properties.Resources.Cherry;
+                    break;
+                case 2:
+                    _image = new PictureBox();
+                    _image.BackgroundImage = Snake.Properties.Resources.Poop;
+                    break;
+
+            }
+        }
     }
 }
