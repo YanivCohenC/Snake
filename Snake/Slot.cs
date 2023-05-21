@@ -43,8 +43,8 @@ namespace Snake
                     _image = new PictureBox();
                     _image.BackgroundImage = Snake.Properties.Resources.Poop;
                     break;
-
             }
+            _image.BackgroundImageLayout = ImageLayout.Stretch;
         }
     }
 }

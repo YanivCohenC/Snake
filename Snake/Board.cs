@@ -25,8 +25,6 @@ namespace Snake
         private Menu mainMenu;
         private List<Player> _playerList; // For scoreboard
         private Slot[,] _gameMatrix; // For all of the elements on board
-        private List<snakeBody> _p1Session; // p1 brain
-        private List<snakeBody> _p2Session;
 
         private Timer countdownTimer;
         private Timer boardTimer;
@@ -54,10 +52,9 @@ namespace Snake
 
             Player p1 = new Player(p1Name, mainMenu.getP1Controller(), mainMenu.getP1Type());
             _playerList.Add(p1);
-            _p1Session = new List<snakeBody>
-            {
-                new snakeBody(true, p1.getPlayerType())
-            };
+            _playerList[0].getCoordinates().Add(new snakeBody(true, p1.getPlayerType(), (int)Direction.Down, 6 ,1));
+            _playerList[0].getCoordinates().Add(new snakeBody(false, p1.getPlayerType(), (int)Direction.Down, 6 ,0));
+
             p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
             if (p2Controller != "" && p2Controller != "Disabled")
             {
@@ -69,16 +66,31 @@ namespace Snake
 
                 Player p2 = new Player(p1Name, p2Controller, mainMenu.getP2Type());
                 _playerList.Add(p2);
+                _playerList[1].getCoordinates().Add(new snakeBody(true, p2.getPlayerType(), (int)Direction.Up, 13, 18));
+                _playerList[1].getCoordinates().Add(new snakeBody(false, p2.getPlayerType(), (int)Direction.Up, 13, 19));
                 p2NameLabel.Visible = p2ScoreLabel1.Visible = p2ScoreLabel2.Visible = true;
             }
             initializeMatrix();
+
+            updateSlot(6, 0, false, _playerList[0].getPlayerType(), Direction.Down);
+            updateSlot(6, 1, true, _playerList[0].getPlayerType(), Direction.Down);
+            
+
+            if (_playerList.Count > 1)
+            {
+                updateSlot(13, 19, false, _playerList[1].getPlayerType(), Direction.Up);
+                updateSlot(13, 18, true, _playerList[1].getPlayerType(), Direction.Up);
+            }
+
 
             countdownTimer = new System.Windows.Forms.Timer();
             countdownTimer.Interval = 1000; // 1 second
             countdownTimer.Tick += countDown_Tick;
             countdownTimer.Start();
 
-
+            boardTimer = new System.Windows.Forms.Timer();
+            boardTimer.Interval = 500; // 1 second
+            boardTimer.Tick += boardTimer_Tick;
 
 
             //readMatrix();
@@ -86,10 +98,7 @@ namespace Snake
 
         private void Board_Shown(object sender, EventArgs e)
         {
-            boardTimer = new System.Windows.Forms.Timer();
-            boardTimer.Interval = 500; // 0.5 second
-            boardTimer.Tick += boardTimer_Tick;
-            boardTimer.Start();
+            
         }
 
 
@@ -103,43 +112,75 @@ namespace Snake
             {
                 countdownTimer.Stop();
                 countdownLabel.Hide();
+                boardTimer.Start();
                 // Start the game here
             }
         }
 
         private void boardTimer_Tick(object sender, EventArgs e)
         {
-
+            int x = _playerList[0].getCoordinates()[0].getX();
+            int y = _playerList[0].getCoordinates()[0].getY();
+            Direction d = (Direction)_playerList[0].getCoordinates()[0].getDirection();
+            if (d == Direction.Up)
+            {
+                y--;
+            }
+            if (d == Direction.Down)
+            {
+                _playerList[0].getCoordinates()[0].setY(++y);
+            }
+            if (d == Direction.Left)
+            {
+                x--;
+            }
+            if (d == Direction.Right)
+            {
+                x++;
+            }
+            updateSlot(x, y, true, _playerList[0].getPlayerType(), d);
+            this.Invalidate();
+            // changes of snake and board
         }
 
-        private void Board_KeyDown(object sender, KeyEventArgs e, string keyController, int position)
+        public void updateSlot(int x, int y, bool isHead, int type, Direction d)
+        {
+            Point p = _gameMatrix[x, y].getPicture().Location;
+            this.Controls.Remove(_gameMatrix[x, y].getPicture());
+            _gameMatrix[x, y] = new snakeBody(isHead, type, (int)d, x, y);
+            _gameMatrix[x, y].getPicture().Location = p;
+            _gameMatrix[x, y].getPicture().Size = new Size(SIZE_X, SIZE_Y);
+            this.Controls.Add(_gameMatrix[x, y].getPicture());
+        }
+
+        private void Board_KeyDown(object sender, KeyEventArgs e, string keyController, int direction)
         {
             if (e.KeyCode == Keys.A)
             {
-                if (position == 0) 
-                    position = 1;
-                if (position == 1)
-                    position = 0;
+                if (direction == 0) 
+                    direction = 1;
+                if (direction == 1)
+                    direction = 0;
             }
             if (e.KeyCode == Keys.D)
             { 
-                if (position == 0)
-                    position = 2;
-                if (position == 2)
-                    position = 0;
+                if (direction == 0)
+                    direction = 2;
+                if (direction == 2)
+                    direction = 0;
             }
             if (e.KeyCode == Keys.W)
             {
-                if (position == 1 || position == 2)
-                    position = 3;
+                if (direction == 1 || direction == 2)
+                    direction = 3;
             }
             if (e.KeyCode==Keys.S)
             {
-                if (position == 1 || position == 2)
-                    position = 0;
+                if (direction == 1 || direction == 2)
+                    direction = 0;
             }
 
-            switch (position)
+            switch (direction)
             {
                 case 0:
                     break;
@@ -177,24 +218,12 @@ namespace Snake
                     }
                 }
             }
+            //_gameMatrix[0, 6] = _p1Session[0];
         }
+    }
 
-        private void readMatrix()
-        {
-            // For confirm visibility of all images set 
-            //int y = 0;
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    for (int j = 0; j < 10; j++)
-            //    {
-            //        if ()
-
-
-            //        // Following three lines set the images(picture boxes) locations
-
-            //    }
-
-            //}
-        }
+    public enum Direction
+    {
+        Up, Down, Left, Right
     }
 }
