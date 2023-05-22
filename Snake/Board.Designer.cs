@@ -149,6 +149,7 @@
             FormClosed += Board_FormClosed;
             Load += Board_Load;
             Shown += Board_Shown;
+            KeyDown += Board_KeyDown;
             ResumeLayout(false);
             PerformLayout();
         }

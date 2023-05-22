@@ -130,6 +130,15 @@
   <data name="Empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\assets\empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="head0Dead" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\assets\head0dead.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="head1Dead" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\assets\head1dead.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="head2Dead" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\assets\head2dead.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="pixel snake" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\pixel snake.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -141,6 +150,12 @@
   </data>
   <data name="snake0Head" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\assets\snake0head.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="snake1Body" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\assets\snake1body.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="snake1Head" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\assets\snake1head.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="snake2Body" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\assets\snake2body.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

@@ -13,20 +13,25 @@ namespace Snake
         private int _direction;
         private int _x;
         private int _y;
+        private bool _status;
 
-        public snakeBody(bool isHead, int type, int direction, int x, int y)
+        public snakeBody(bool isHead, int type, int direction, int x, int y, bool status)
         {
             _isHead = isHead;
             _type = type;
             _direction = direction;
             _x = x;
             _y = y;
+            _status = status;
             if (_isHead)
             {
                 switch (_type)
                 {
                     case 0:
-                        _image.BackgroundImage = Snake.Properties.Resources.snake0Head;
+                        if (status == true)
+                            _image.BackgroundImage = Snake.Properties.Resources.snake0Head;
+                        else
+                            _image.BackgroundImage = Snake.Properties.Resources.head0Dead;
                         break;
                     case 1:
                         //_image.BackgroundImage = Snake.Properties.Resources.snake1Head;

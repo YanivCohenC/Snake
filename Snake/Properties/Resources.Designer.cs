@@ -103,6 +103,36 @@ namespace Snake.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap head0Dead {
+            get {
+                object obj = ResourceManager.GetObject("head0Dead", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap head1Dead {
+            get {
+                object obj = ResourceManager.GetObject("head1Dead", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap head2Dead {
+            get {
+                object obj = ResourceManager.GetObject("head2Dead", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap pixel_snake {
             get {
                 object obj = ResourceManager.GetObject("pixel snake", resourceCulture);
@@ -136,6 +166,26 @@ namespace Snake.Properties {
         internal static System.Drawing.Bitmap snake0Head {
             get {
                 object obj = ResourceManager.GetObject("snake0Head", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap snake1Body {
+            get {
+                object obj = ResourceManager.GetObject("snake1Body", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap snake1Head {
+            get {
+                object obj = ResourceManager.GetObject("snake1Head", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
