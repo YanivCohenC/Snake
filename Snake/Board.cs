@@ -13,6 +13,9 @@ using static System.Windows.Forms.DataFormats;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Timer = System.Windows.Forms.Timer;
 using static System.Net.Mime.MediaTypeNames;
+using Image = System.Drawing.Image;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Snake
 {
@@ -90,7 +93,7 @@ namespace Snake
             countdownTimer.Start();
 
             boardTimer = new System.Windows.Forms.Timer();
-            boardTimer.Interval = 500; // 1 second
+            boardTimer.Interval = 300;
             boardTimer.Tick += boardTimer_Tick;
 
 
@@ -122,6 +125,7 @@ namespace Snake
 
         private void boardTimer_Tick(object sender, EventArgs e)
         {
+            int k;
             for (int i = 0; i < _playerList.Count; i++)
             {
                 if (_playerList[i].getStatus() == true)
@@ -144,8 +148,16 @@ namespace Snake
                                 yTail = yHead;
                                 yHead--;
                             }
-                            // else
-                            
+                            //else  
+                            //{  xTail = xBody;
+                            //   yTail = yBody;
+                            //   yHead--;
+                            //    for (k = _playerList.Count - 1; k > 0; k--)
+                            //    {
+                            //        xBody = _playerList[i].getCoordinates()[k - 1].getX();
+                            //        yBody = _playerList[i].getCoordinates()[k - 1].getY();
+                            //    }
+                            // }
                         }
                         if (d == Direction.Down)
                         {
@@ -156,6 +168,8 @@ namespace Snake
                                 yHead++;
                             }
                             // else
+                            
+
                         }
                         if (d == Direction.Left)
                         {
@@ -184,8 +198,8 @@ namespace Snake
                         {
                             updateSlot(_playerList[i].getCoordinates()[j].getX(), _playerList[i].getCoordinates()[j].getY(), false, -1, d, false);
                         }
+                        updateSlot(_playerList[i].getCoordinates()[0].getX(), _playerList[i].getCoordinates()[0].getY(), true, _playerList[i].getPlayerType(), d, false);
                         _playerList[i].getCoordinates().Clear();
-                        updateSlot(xBody, yBody, true, _playerList[i].getPlayerType(), d, false);
                     }
                     else
                     {
@@ -212,10 +226,95 @@ namespace Snake
             if (type == -1)
                 _gameMatrix[x, y] = new Slot();
             else
+            {
                 _gameMatrix[x, y] = new snakeBody(isHead, type, (int)d, x, y, status);
+                _gameMatrix[x, y].getPicture().BackgroundImage = rotatePicture(d, isHead, type, status);
+
+            }
             _gameMatrix[x, y].getPicture().Location = p;
             _gameMatrix[x, y].getPicture().Size = new Size(SIZE_X, SIZE_Y);
             this.Controls.Add(_gameMatrix[x, y].getPicture());
+        }
+
+        public void generateFood()
+        {
+
+            Random rnd = new Random();
+            int num = rnd.Next(2);
+            Food food;
+            if (num == (int)foodType.Apple)
+                food = new Apple();
+            if (num == (int)foodType.Cherry)
+                food = new Cherry();
+            if (num == (int)foodType.Poop)
+                food = new Poop();
+            //while (1 != 2)
+            //{
+            //    int x = rnd.Next(ROWS);
+            //    int y = rnd.Next(COLS);
+            //    if (_gameMatrix[x, y] != Empt
+            //}
+            
+        }
+
+        public Image rotatePicture(Direction d, bool isHead, int type, bool status)
+        {
+            Image img = null;
+            switch (type)
+            {
+                case 0:
+                    if (isHead == true)
+                    {
+                        if (status == true)
+                            img = Snake.Properties.Resources.snake0Head;
+                        else
+                            img = Snake.Properties.Resources.head0Dead;
+                    }
+                    else
+                    {
+                        img = Snake.Properties.Resources.snake0Body;
+                    }
+                    break;
+                case 1:
+                    if (isHead == true)
+                    {
+                        if (status == true)
+                            img = Snake.Properties.Resources.snake1Head;
+                        else
+                            img = Snake.Properties.Resources.head1Dead;
+                    }
+                    else
+                    {
+                        img = Snake.Properties.Resources.snake1Body;
+                    }
+                    break;
+                case 2:
+                    if (isHead == true)
+                    {
+                        if (status == true)
+                            img = Snake.Properties.Resources.snake2Head;
+                        else
+                            img = Snake.Properties.Resources.head2Dead;
+                    }
+                    else
+                    {
+                        img = Snake.Properties.Resources.snake2Body;
+                    }
+                    break;
+            }
+            switch (d)
+            {
+                case Direction.Up:
+                    img.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    break;
+                case Direction.Right:
+                    img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    break;
+                case Direction.Left:
+                    img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    break;
+            }
+            return img;
         }
 
         private void Board_FormClosed(object sender, FormClosedEventArgs e)
@@ -253,62 +352,57 @@ namespace Snake
             else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
                 type = "Keyboard (Arrows)";
             // add controller
-            for (int i = 0; i<_playerList.Count; i++)
+            for (int i = 0; i < _playerList.Count; i++)
             {
-                int d = _playerList[i].getCoordinates()[0].getDirection();
-                if (_playerList[i].getInput() == type)
+                if (_playerList[i].getStatus() == true)
                 {
-                    if (type == "Keyboard (WASD)")
+                    int d = _playerList[i].getCoordinates()[0].getDirection();
+                    if (_playerList[i].getInput() == type)
                     {
-                        if (e.KeyCode == Keys.W)
-                            if (d == 2 || d == 3)
-                                d = 0;
-                        if (e.KeyCode == Keys.A)
-                            if (d == 0 || d == 1)
-                                d = 2;
-                        if (e.KeyCode == Keys.S)
-                            if (d == 2 || d == 3)
-                                d = 1;
-                        if (e.KeyCode == Keys.D)
-                            if (d == 0 || d == 1)
-                                d = 3;
+                        if (type == "Keyboard (WASD)")
+                        {
+                            if (e.KeyCode == Keys.W)
+                                if (d == 2 || d == 3)
+                                    d = 0;
+                            if (e.KeyCode == Keys.A)
+                                if (d == 0 || d == 1)
+                                    d = 2;
+                            if (e.KeyCode == Keys.S)
+                                if (d == 2 || d == 3)
+                                    d = 1;
+                            if (e.KeyCode == Keys.D)
+                                if (d == 0 || d == 1)
+                                    d = 3;
+                        }
+                        if (type == "Keyboard (Arrows)")
+                        {
+                            if (e.KeyCode == Keys.Up)
+                                if (d == 2 || d == 3)
+                                    d = 0;
+                            if (e.KeyCode == Keys.Left)
+                                if (d == 0 || d == 1)
+                                    d = 2;
+                            if (e.KeyCode == Keys.Down)
+                                if (d == 2 || d == 3)
+                                    d = 1;
+                            if (e.KeyCode == Keys.Right)
+                                if (d == 0 || d == 1)
+                                    d = 3;
+                        }
                     }
-                    if (type == "Keyboard (Arrows)")
-                    {
-                        if (e.KeyCode == Keys.Up)
-                            if (d == 2 || d == 3)
-                                d = 0;
-                        if (e.KeyCode == Keys.Left)
-                            if (d == 0 || d == 1)
-                                d = 2;
-                        if (e.KeyCode == Keys.Down)
-                            if (d == 2 || d == 3)
-                                d = 1;
-                        if (e.KeyCode == Keys.Right)
-                            if (d == 0 || d == 1)
-                                d = 3;
-                    }
+                    _playerList[i].getCoordinates()[0].setDirection(d);
                 }
-                _playerList[i].getCoordinates()[0].setDirection(d);
             }
-            
-            // rotate
-            //switch (direction)
-            //{
-            //    case 0:
-            //        break;
-            //    case 1:
-            //        break;
-            //    case 2:
-            //        break;
-            //    case 3:
-            //        break;
-            //}
         }
     }
 
     public enum Direction
     {
         Up, Down, Left, Right
+    }
+
+    public enum foodType
+    {
+        Apple, Cherry, Poop
     }
 }

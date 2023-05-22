@@ -34,10 +34,16 @@ namespace Snake
                             _image.BackgroundImage = Snake.Properties.Resources.head0Dead;
                         break;
                     case 1:
-                        //_image.BackgroundImage = Snake.Properties.Resources.snake1Head;
+                        if (status == true)
+                            _image.BackgroundImage = Snake.Properties.Resources.snake1Head;
+                        else
+                            _image.BackgroundImage = Snake.Properties.Resources.head1Dead;
                         break;
                     case 2:
-                        //_image.BackgroundImage = Snake.Properties.Resources.snake2Head;
+                        if (status == true)
+                            _image.BackgroundImage = Snake.Properties.Resources.snake2Head;
+                        else
+                            _image.BackgroundImage = Snake.Properties.Resources.head2Dead;
                         break;
                 }
                 _image.BackgroundImageLayout = ImageLayout.Stretch;
@@ -50,10 +56,10 @@ namespace Snake
                         _image.BackgroundImage = Snake.Properties.Resources.snake0Body;
                         break;
                     case 1:
-                        //_image.BackgroundImage = Snake.Properties.Resources.snake1Body;
+                        _image.BackgroundImage = Snake.Properties.Resources.snake1Body;
                         break;
                     case 2:
-                        //_image.BackgroundImage = Snake.Properties.Resources.snake2Body;
+                        _image.BackgroundImage = Snake.Properties.Resources.snake2Body;
                         break;
                 }
                 _image.BackgroundImageLayout = ImageLayout.Stretch;

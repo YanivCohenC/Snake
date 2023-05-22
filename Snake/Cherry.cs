@@ -10,7 +10,7 @@ namespace Snake
     {
         public Cherry()
         {
-            //_image.BackgroundImage = Snake.Properties.Resources.Cherry;
+            _image.BackgroundImage = Snake.Properties.Resources.Cherry;
         }
 
         public int effect()
