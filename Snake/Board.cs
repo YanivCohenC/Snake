@@ -214,9 +214,9 @@ namespace Snake
                     }
                     else
                     {
-                        if (_gameMatrix[xHead, yHead] is Food) // if food
+                        if (_gameMatrix[xHead, yHead] is Food food) // if food
                         {
-                            pl.updateScore(_gameMatrix[xHead, yHead].effect());
+                            pl.updateScore(food.effect());
                             if (pl == _playerList[0])
                                 p1ScoreLabel2.Text = pl.getScore().ToString();
                             else
@@ -401,7 +401,7 @@ namespace Snake
                 type = "Keyboard (WASD)";
             else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
                 type = "Keyboard (Arrows)";
-            // add controller
+            //TODO add controller
             for (int i = 0; i < _playerList.Count; i++)
             {
                 if (_playerList[i].isAlive() == true)

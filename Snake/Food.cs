@@ -42,7 +42,7 @@ namespace Snake
             return _image;
         }
 
-        public override int effect()
+        public virtual int effect()
         {
             return 0;
         }

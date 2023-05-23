@@ -21,10 +21,5 @@ namespace Snake
         {
             return _image;
         }
-
-        public virtual int effect()
-        {
-            return 0;
-        }
     }
 }
