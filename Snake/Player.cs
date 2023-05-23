@@ -44,7 +44,7 @@
             return _coordinates;
         }
 
-        public bool getStatus()
+        public bool isAlive()
         {
             return _status;
         }
@@ -52,6 +52,11 @@
         public void setStatus(bool status)
         {
             _status = status;
+        }
+
+        public void updateScore(int score)
+        {
+            _playerScore += score;
         }
     }
 }

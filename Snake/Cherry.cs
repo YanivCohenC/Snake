@@ -10,12 +10,20 @@ namespace Snake
     {
         public Cherry()
         {
+            _image = new PictureBox();
             _image.BackgroundImage = Snake.Properties.Resources.Cherry;
+            _image.BackgroundImageLayout = ImageLayout.Stretch;
+            _time = 5;
         }
 
-        public int effect()
+        public override int effect()
         {
             return 2;
+        }
+
+        public PictureBox getPicture()
+        {
+            return _image;
         }
     }
 }

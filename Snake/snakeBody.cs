@@ -10,12 +10,12 @@ namespace Snake
     {
         private bool _isHead;
         private int _type;
-        private int _direction;
+        private Direction _direction;
         private int _x;
         private int _y;
         private bool _status;
 
-        public snakeBody(bool isHead, int type, int direction, int x, int y, bool status)
+        public snakeBody(bool isHead, int type, Direction direction, int x, int y, bool status)
         {
             _isHead = isHead;
             _type = type;
@@ -76,12 +76,12 @@ namespace Snake
             return _type;
         }
 
-        public void setDirection(int direction)
+        public void setDirection(Direction direction)
         {
             _direction = direction;
         }
 
-        public int getDirection()
+        public Direction getDirection()
         {
             return _direction;
         }

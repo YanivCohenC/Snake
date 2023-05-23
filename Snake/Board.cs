@@ -32,6 +32,7 @@ namespace Snake
 
         private Timer countdownTimer;
         private Timer boardTimer;
+        private Timer generateFoodTimer;
 
         public Board(Menu other)
         {
@@ -56,8 +57,8 @@ namespace Snake
 
             Player p1 = new Player(p1Name, mainMenu.getP1Controller(), mainMenu.getP1Type());
             _playerList.Add(p1);
-            _playerList[0].getCoordinates().Add(new snakeBody(true, p1.getPlayerType(), (int)Direction.Down, 6, 1, true));
-            _playerList[0].getCoordinates().Add(new snakeBody(false, p1.getPlayerType(), (int)Direction.Down, 6, 0, true));
+            _playerList[0].getCoordinates().Add(new snakeBody(true, p1.getPlayerType(), Direction.Down, 6, 1, true));
+            _playerList[0].getCoordinates().Add(new snakeBody(false, p1.getPlayerType(), Direction.Down, 6, 0, true));
 
             p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
             if (p2Controller != "" && p2Controller != "Disabled")
@@ -86,16 +87,20 @@ namespace Snake
                 updateSlot(13, 18, true, _playerList[1].getPlayerType(), Direction.Up, true);
             }
 
+          
 
-            countdownTimer = new System.Windows.Forms.Timer();
+            countdownTimer = new Timer();
             countdownTimer.Interval = 1000; // 1 second
             countdownTimer.Tick += countDown_Tick;
             countdownTimer.Start();
 
-            boardTimer = new System.Windows.Forms.Timer();
-            boardTimer.Interval = 300;
+            boardTimer = new Timer();
+            boardTimer.Interval = 200;
             boardTimer.Tick += boardTimer_Tick;
 
+            generateFoodTimer = new Timer();
+            generateFoodTimer.Interval = 7000; // 7 seconds
+            generateFoodTimer.Tick += generateFood;
 
             //readMatrix();
         }
@@ -119,6 +124,8 @@ namespace Snake
                 for (int i = 0; i < _playerList.Count; i++)
                     _playerList[i].setStatus(true);
                 boardTimer.Start();
+                generateFoodTimer.Start();
+                generateFood(null, EventArgs.Empty);
                 // Start the game here
             }
         }
@@ -126,54 +133,57 @@ namespace Snake
         private void boardTimer_Tick(object sender, EventArgs e)
         {
             int k;
-            for (int i = 0; i < _playerList.Count; i++)
+            foreach (Player pl in _playerList)
             {
-                if (_playerList[i].getStatus() == true)
+                if (pl.isAlive())
                 {
-                    int xHead = _playerList[i].getCoordinates()[0].getX();
-                    int yHead = _playerList[i].getCoordinates()[0].getY();
-                    int xBody = _playerList[i].getCoordinates()[1].getX();
-                    int yBody = _playerList[i].getCoordinates()[1].getY();
-                    int xTail = _playerList[i].getCoordinates()[_playerList[i].getCoordinates().Count - 1].getX();
-                    int yTail = _playerList[i].getCoordinates()[_playerList[i].getCoordinates().Count - 1].getY();
-                    Direction d = (Direction)_playerList[i].getCoordinates()[0].getDirection();
-                    if (_playerList[i].getStatus() == true)
+                    List<snakeBody> coordinates = pl.getCoordinates();
+                    int xHead = coordinates[0].getX();
+                    int yHead = coordinates[0].getY();
+                    int xBody = coordinates[1].getX();
+                    int yBody = coordinates[1].getY();
+                    int xTail = coordinates[coordinates.Count - 1].getX();
+                    int yTail = coordinates[coordinates.Count - 1].getY();
+                    Direction d = coordinates[0].getDirection();
+                    if (pl.isAlive() == true)
                     {
                         updateSlot(xTail, yTail, false, -1, d, true);
+
                         if (d == Direction.Up)
                         {
-                            if (_playerList[i].getScore() == 0)
+                            if (pl.getScore() == 0)
                             {
                                 xTail = xHead;
                                 yTail = yHead;
                                 yHead--;
                             }
-                            //else  
-                            //{  xTail = xBody;
-                            //   yTail = yBody;
-                            //   yHead--;
+                            //else
+                            //{
+                            //    xTail = xBody;
+                            //    yTail = yBody;
+                            //    yHead--;
                             //    for (k = _playerList.Count - 1; k > 0; k--)
                             //    {
-                            //        xBody = _playerList[i].getCoordinates()[k - 1].getX();
-                            //        yBody = _playerList[i].getCoordinates()[k - 1].getY();
+                            //        xBody = coordinates[k - 1].getX();
+                            //        yBody = coordinates[k - 1].getY();
                             //    }
-                            // }
+                            //}
                         }
                         if (d == Direction.Down)
                         {
-                            if (_playerList[i].getScore() == 0)
+                            if (pl.getScore() == 0)
                             {
                                 xTail = xHead;
                                 yTail = yHead;
                                 yHead++;
                             }
                             // else
-                            
+
 
                         }
                         if (d == Direction.Left)
                         {
-                            if (_playerList[i].getScore() == 0)
+                            if (pl.getScore() == 0)
                             {
                                 xTail = xHead;
                                 yTail = yHead;
@@ -182,7 +192,7 @@ namespace Snake
                         }
                         if (d == Direction.Right)
                         {
-                            if (_playerList[i].getScore() == 0)
+                            if (pl.getScore() == 0)
                             {
                                 xTail = xHead;
                                 yTail = yHead;
@@ -190,31 +200,44 @@ namespace Snake
                             }
                         }
                     }
-                    if (_playerList[i].getStatus() == false || xHead == ROWS || xHead < 0 || yHead == COLS || yHead < 0)
+                    
+                    if (pl.isAlive() == false || xHead == ROWS || xHead < 0 || yHead == COLS || yHead < 0|| pl.getScore() < 0)
                     {
-                        _playerList[i].setStatus(false);
+                        pl.setStatus(false);
                         int j = 0;
-                        for (j = _playerList[i].getCoordinates().Count - 1; j >= 0; j--)
+                        for (j = coordinates.Count - 1; j >= 0; j--)
                         {
-                            updateSlot(_playerList[i].getCoordinates()[j].getX(), _playerList[i].getCoordinates()[j].getY(), false, -1, d, false);
+                            updateSlot(coordinates[j].getX(), coordinates[j].getY(), false, -1, d, false);
                         }
-                        updateSlot(_playerList[i].getCoordinates()[0].getX(), _playerList[i].getCoordinates()[0].getY(), true, _playerList[i].getPlayerType(), d, false);
-                        _playerList[i].getCoordinates().Clear();
+                        updateSlot(coordinates[0].getX(), coordinates[0].getY(), true, pl.getPlayerType(), d, false);
+                        coordinates.Clear();
                     }
                     else
                     {
-                        _playerList[i].getCoordinates()[0].setX(xHead);
-                        _playerList[i].getCoordinates()[0].setY(yHead);
+                        if (_gameMatrix[xHead, yHead] is Food) // if food
+                        {
+                            pl.updateScore(_gameMatrix[xHead, yHead].effect());
+                            if (pl == _playerList[0])
+                                p1ScoreLabel2.Text = pl.getScore().ToString();
+                            else
+                                p2ScoreLabel2.Text = pl.getScore().ToString();
+                        }
+                        //    //_gameMatrix[xHead, yHead] = new Slot();
+
+                        //}
+                        coordinates[0].setX(xHead);
+                        coordinates[0].setY(yHead);
                         //_playerList[i].getCoordinates()[1].setX(xBody);
                         //_playerList[i].getCoordinates()[1].setY(yBody);
-                        _playerList[i].getCoordinates()[_playerList[i].getCoordinates().Count - 1].setX(xTail);
-                        _playerList[i].getCoordinates()[_playerList[i].getCoordinates().Count - 1].setY(yTail);
-                        updateSlot(xHead, yHead, true, _playerList[i].getPlayerType(), d, true);
+                        coordinates[coordinates.Count - 1].setX(xTail);
+                        coordinates[coordinates.Count - 1].setY(yTail);
+                        updateSlot(xHead, yHead, true, pl.getPlayerType(), d, true);
                         //updateSlot(xBody, yBody, false, _playerList[i].getPlayerType(), d, true);
-                        updateSlot(xTail, yTail, false, _playerList[i].getPlayerType(), d, true);
+                        updateSlot(xTail, yTail, false, pl.getPlayerType(), d, true);
                     }
                 }
             }
+        
             this.Invalidate();
             // changes of snake and board
         }
@@ -224,37 +247,64 @@ namespace Snake
             Point p = _gameMatrix[x, y].getPicture().Location;
             this.Controls.Remove(_gameMatrix[x, y].getPicture());
             if (type == -1)
+            {
                 _gameMatrix[x, y] = new Slot();
+            }
             else
             {
-                _gameMatrix[x, y] = new snakeBody(isHead, type, (int)d, x, y, status);
+                _gameMatrix[x, y] = new snakeBody(isHead, type, d, x, y, status);
                 _gameMatrix[x, y].getPicture().BackgroundImage = rotatePicture(d, isHead, type, status);
 
             }
             _gameMatrix[x, y].getPicture().Location = p;
             _gameMatrix[x, y].getPicture().Size = new Size(SIZE_X, SIZE_Y);
             this.Controls.Add(_gameMatrix[x, y].getPicture());
+           
         }
 
-        public void generateFood()
+        private void generateFood(object sender, EventArgs e)
         {
-
             Random rnd = new Random();
-            int num = rnd.Next(2);
-            Food food;
-            if (num == (int)foodType.Apple)
-                food = new Apple();
-            if (num == (int)foodType.Cherry)
-                food = new Cherry();
-            if (num == (int)foodType.Poop)
-                food = new Poop();
-            //while (1 != 2)
-            //{
-            //    int x = rnd.Next(ROWS);
-            //    int y = rnd.Next(COLS);
-            //    if (_gameMatrix[x, y] != Empt
-            //}
-            
+            Timer timer = null;
+            int num = rnd.Next(3);
+          
+            while (1 != 2)
+            {
+                int x = rnd.Next(ROWS);
+                int y = rnd.Next(COLS);
+ 
+                if (_gameMatrix[x,y] is Slot)
+                {
+                    Point p = _gameMatrix[x, y].getPicture().Location;
+                    this.Controls.Remove(_gameMatrix[x, y].getPicture());
+
+                    if (num == (int)foodType.Apple)
+                    {
+                        Apple s = new Apple();
+                        _gameMatrix[x, y] = s;
+                        timer = s.getTimer();
+                    }
+                    if (num == (int)foodType.Cherry)
+                    {
+                        Cherry s  = new Cherry();
+                        _gameMatrix[x, y] = s;
+                        timer = s.getTimer();
+                    }
+
+                    if (num == (int)foodType.Poop)
+                    {
+                        Poop s = new Poop();
+                        _gameMatrix[x, y] = s;
+                        timer = s.getTimer();
+                    }
+
+                    timer.Start();
+                    _gameMatrix[x, y].getPicture().Location= p;
+                    _gameMatrix[x, y].getPicture().Size = new Size(SIZE_X, SIZE_Y);
+                    this.Controls.Add(_gameMatrix[x, y].getPicture());
+                    break;
+                }
+            }
         }
 
         public Image rotatePicture(Direction d, bool isHead, int type, bool status)
@@ -354,40 +404,36 @@ namespace Snake
             // add controller
             for (int i = 0; i < _playerList.Count; i++)
             {
-                if (_playerList[i].getStatus() == true)
+                if (_playerList[i].isAlive() == true)
                 {
-                    int d = _playerList[i].getCoordinates()[0].getDirection();
+                    Direction d = _playerList[i].getCoordinates()[0].getDirection();
                     if (_playerList[i].getInput() == type)
                     {
-                        if (type == "Keyboard (WASD)")
+                        if (type == "Keyboard (WASD)"  || type == "Keyboard (Arrows)")
                         {
-                            if (e.KeyCode == Keys.W)
-                                if (d == 2 || d == 3)
-                                    d = 0;
-                            if (e.KeyCode == Keys.A)
-                                if (d == 0 || d == 1)
-                                    d = 2;
-                            if (e.KeyCode == Keys.S)
-                                if (d == 2 || d == 3)
-                                    d = 1;
-                            if (e.KeyCode == Keys.D)
-                                if (d == 0 || d == 1)
-                                    d = 3;
-                        }
-                        if (type == "Keyboard (Arrows)")
-                        {
-                            if (e.KeyCode == Keys.Up)
-                                if (d == 2 || d == 3)
-                                    d = 0;
-                            if (e.KeyCode == Keys.Left)
-                                if (d == 0 || d == 1)
-                                    d = 2;
-                            if (e.KeyCode == Keys.Down)
-                                if (d == 2 || d == 3)
-                                    d = 1;
-                            if (e.KeyCode == Keys.Right)
-                                if (d == 0 || d == 1)
-                                    d = 3;
+                            switch (e.KeyCode)
+                            {
+                                case Keys.Up:
+                                case Keys.W:
+                                    if (d == Direction.Left || d == Direction.Right)
+                                        d = Direction.Up;
+                                    break;
+                                case Keys.Left:
+                                case Keys.A:
+                                    if (d == Direction.Up || d == Direction.Down)
+                                        d = Direction.Left;
+                                    break;
+                                case Keys.Down:
+                                case Keys.S:
+                                    if (d == Direction.Left || d == Direction.Right)
+                                        d = Direction.Down;
+                                    break;
+                                case Keys.Right:
+                                case Keys.D:
+                                    if (d == Direction.Up || d == Direction.Down)
+                                        d = Direction.Right;
+                                    break;
+                            }
                         }
                     }
                     _playerList[i].getCoordinates()[0].setDirection(d);

@@ -10,12 +10,20 @@ namespace Snake
     {
         public Poop()
         {
+            _image = new PictureBox();
             _image.BackgroundImage = Snake.Properties.Resources.Poop;
+            _image.BackgroundImageLayout = ImageLayout.Stretch;
+            _time = 10;
         }
 
-        public int effect()
+        public override int effect()
         {
             return -1;
+        }
+
+        public PictureBox getPicture()
+        {
+            return _image;
         }
     }
 }
