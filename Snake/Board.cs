@@ -132,7 +132,7 @@ namespace Snake
 
         private void boardTimer_Tick(object sender, EventArgs e)
         {
-            int k;
+            int temp = 0; 
             foreach (Player pl in _playerList)
             {
                 if (pl.isAlive())
@@ -140,10 +140,20 @@ namespace Snake
                     List<snakeBody> coordinates = pl.getCoordinates();
                     int xHead = coordinates[0].getX();
                     int yHead = coordinates[0].getY();
-                    int xBody = coordinates[1].getX();
-                    int yBody = coordinates[1].getY();
-                    int xTail = coordinates[coordinates.Count - 1].getX();
-                    int yTail = coordinates[coordinates.Count - 1].getY();
+                    List<int> xBody = new List<int>(pl.getScore());
+                    List<int> yBody = new List<int>(pl.getScore());
+                    if (pl.getScore() != 0)
+                    {
+                        for (int i = 1; i < coordinates.Count - 1; i++)
+                        {
+                            xBody.Add(coordinates[i].getX());
+                            yBody.Add(coordinates[i].getY());
+                        }
+                    }
+                    int xTail, xoldTail;
+                    xTail = xoldTail = coordinates[coordinates.Count - 1].getX();
+                    int yTail, yoldTail;
+                    yTail = yoldTail = coordinates[coordinates.Count - 1].getY();
                     Direction d = coordinates[0].getDirection();
                     if (pl.isAlive() == true)
                     {
@@ -157,17 +167,20 @@ namespace Snake
                                 yTail = yHead;
                                 yHead--;
                             }
-                            //else
-                            //{
-                            //    xTail = xBody;
-                            //    yTail = yBody;
-                            //    yHead--;
-                            //    for (k = _playerList.Count - 1; k > 0; k--)
-                            //    {
-                            //        xBody = coordinates[k - 1].getX();
-                            //        yBody = coordinates[k - 1].getY();
-                            //    }
-                            //}
+                            else
+                            {
+                                xTail = coordinates[coordinates.Count - 2].getX();
+                                yTail = coordinates[coordinates.Count - 2].getY();
+
+                                for (int i = coordinates.Count - 2; i > 0; i--)
+                                {
+                                    xBody[i] = coordinates[i -1].getX();
+                                    yBody[i] = coordinates[i-1].getY();
+                                }
+                                xBody[0] = xHead;
+                                yBody[0] = yHead;
+                                yHead--;
+                            }
                         }
                         if (d == Direction.Down)
                         {
@@ -177,9 +190,20 @@ namespace Snake
                                 yTail = yHead;
                                 yHead++;
                             }
-                            // else
+                            else
+                            {
+                                xTail = coordinates[coordinates.Count - 2].getX();
+                                yTail = coordinates[coordinates.Count - 2].getY();
 
-
+                                for (int i = coordinates.Count-2; i > 0; i--)
+                                {
+                                    xBody[i] = coordinates[coordinates.Count - i].getX();
+                                    yBody[i] = coordinates[coordinates.Count - i].getY();
+                                }
+                                xBody[0] = xHead;
+                                yBody[0] = yHead;
+                                yHead++;
+                            }
                         }
                         if (d == Direction.Left)
                         {
@@ -189,6 +213,20 @@ namespace Snake
                                 yTail = yHead;
                                 xHead--;
                             }
+                            else if (xBody.Count != 0)
+                            {
+                                xTail = coordinates[coordinates.Count - 2].getX();
+                                yTail = coordinates[coordinates.Count - 2].getY();
+
+                                for (int i = coordinates.Count-2; i > 0; i--)
+                                {
+                                    xBody[i] = coordinates[i - 1].getX();
+                                    yBody[i] = coordinates[i - 1].getY();
+                                }
+                                xBody[0] = xHead;
+                                yBody[0] = yHead;
+                                xHead--;
+                            }
                         }
                         if (d == Direction.Right)
                         {
@@ -196,6 +234,20 @@ namespace Snake
                             {
                                 xTail = xHead;
                                 yTail = yHead;
+                                xHead++;
+                            }
+                            else if (xBody.Count != 0)
+                            {
+                                //xTail = coordinates[coordinates.Count - 2].getX();
+                                //yTail = coordinates[coordinates.Count - 2].getY();
+
+                                for (int i = coordinates.Count-2 ; i > 0; i--)
+                                {
+                                    xBody[i] = coordinates[i - 1].getX();
+                                    yBody[i] = coordinates[i - 1].getY();
+                                }
+                                xBody[0] = xHead;
+                                yBody[0] = yHead;
                                 xHead++;
                             }
                         }
@@ -216,23 +268,31 @@ namespace Snake
                     {
                         if (_gameMatrix[xHead, yHead] is Food food) // if food
                         {
-                            pl.updateScore(food.effect());
+                            if (food.isExpired()==false)
+                            {
+                                pl.updateScore(food.effect());
+                            }
+                            pl.getCoordinates().Add(new snakeBody(false, pl.getPlayerType(), d, xoldTail, yoldTail, true));
                             if (pl == _playerList[0])
                                 p1ScoreLabel2.Text = pl.getScore().ToString();
                             else
                                 p2ScoreLabel2.Text = pl.getScore().ToString();
-                        }
-                        //    //_gameMatrix[xHead, yHead] = new Slot();
 
-                        //}
+                        }
                         coordinates[0].setX(xHead);
                         coordinates[0].setY(yHead);
-                        //_playerList[i].getCoordinates()[1].setX(xBody);
-                        //_playerList[i].getCoordinates()[1].setY(yBody);
+                        for (int i = 0; (pl.getScore() > 0) && (i < xBody.Count); i++)
+                        {
+                            coordinates[i + 1].setX(xBody[i]);
+                            coordinates[i + 1].setY(yBody[i]);
+                        }
                         coordinates[coordinates.Count - 1].setX(xTail);
                         coordinates[coordinates.Count - 1].setY(yTail);
                         updateSlot(xHead, yHead, true, pl.getPlayerType(), d, true);
-                        //updateSlot(xBody, yBody, false, _playerList[i].getPlayerType(), d, true);
+                        for (int i = 0; (pl.getScore() > 0) && (i < xBody.Count); i++)
+                        {
+                            updateSlot(xBody[i], yBody[i], false, pl.getPlayerType(), d, true);
+                        }
                         updateSlot(xTail, yTail, false, pl.getPlayerType(), d, true);
                     }
                 }
@@ -283,6 +343,7 @@ namespace Snake
                         Apple s = new Apple();
                         _gameMatrix[x, y] = s;
                         timer = s.getTimer();
+                        
                     }
                     if (num == (int)foodType.Cherry)
                     {
