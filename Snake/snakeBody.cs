@@ -65,7 +65,17 @@ namespace Snake
                 _image.BackgroundImageLayout = ImageLayout.Stretch;
             }
         }
-        
+
+        public snakeBody(snakeBody s)
+        {
+            _isHead = s._isHead;
+            _type = s._type;
+            _direction = s._direction;
+            _x = s._x;
+            _y = s._y;
+            _status = s._status;
+        }
+
         public bool getHead()
         { 
             return _isHead;

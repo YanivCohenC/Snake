@@ -133,16 +133,6 @@ namespace Snake.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Label {
-            get {
-                object obj = ResourceManager.GetObject("Label", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap pixel_snake {
             get {
                 object obj = ResourceManager.GetObject("pixel snake", resourceCulture);
@@ -216,6 +206,16 @@ namespace Snake.Properties {
         internal static System.Drawing.Bitmap snake2Head {
             get {
                 object obj = ResourceManager.GetObject("snake2Head", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SnakeLogo {
+            get {
+                object obj = ResourceManager.GetObject("SnakeLogo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

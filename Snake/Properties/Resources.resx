@@ -163,7 +163,7 @@
   <data name="pixel snake" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\pixel snake.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Label" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Label1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SnakeLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\assets\snakelogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

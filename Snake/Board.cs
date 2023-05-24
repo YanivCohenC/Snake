@@ -16,6 +16,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Image = System.Drawing.Image;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading;
 
 namespace Snake
 {
@@ -37,7 +38,6 @@ namespace Snake
         public Board(Menu other)
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
             mainMenu = other;
             _playerList = new List<Player>();
@@ -87,7 +87,7 @@ namespace Snake
                 updateSlot(13, 18, true, _playerList[1].getPlayerType(), Direction.Up, true);
             }
 
-          
+
 
             countdownTimer = new Timer();
             countdownTimer.Interval = 1000; // 1 second
@@ -132,174 +132,103 @@ namespace Snake
 
         private void boardTimer_Tick(object sender, EventArgs e)
         {
-            int temp = 0; 
+            int temp = 0;
             foreach (Player pl in _playerList)
             {
                 if (pl.isAlive())
                 {
-                    List<snakeBody> coordinates = pl.getCoordinates();
-                    int xHead = coordinates[0].getX();
-                    int yHead = coordinates[0].getY();
-                    List<int> xBody = new List<int>(pl.getScore());
-                    List<int> yBody = new List<int>(pl.getScore());
-                    if (pl.getScore() != 0)
+                    List<snakeBody> newCoordinates = pl.getCoordinates();
+                    var oldCoordinates = newCoordinates.Select(sb => new Point(sb.getX(), sb.getY())).ToList(); // copy newCoordinates by value as Point()
+                    snakeBody head = newCoordinates[0];
+                    Direction d = head.getDirection();
+
+                    for (int i = 1; i < newCoordinates.Count; i++)
                     {
-                        for (int i = 1; i < coordinates.Count - 1; i++)
-                        {
-                            xBody.Add(coordinates[i].getX());
-                            yBody.Add(coordinates[i].getY());
-                        }
+                        newCoordinates[i].setX(oldCoordinates[i - 1].X);
+                        newCoordinates[i].setY(oldCoordinates[i - 1].Y);
                     }
-                    int xTail, xoldTail;
-                    xTail = xoldTail = coordinates[coordinates.Count - 1].getX();
-                    int yTail, yoldTail;
-                    yTail = yoldTail = coordinates[coordinates.Count - 1].getY();
-                    Direction d = coordinates[0].getDirection();
-                    if (pl.isAlive() == true)
+
+                    switch (d)
                     {
-                        updateSlot(xTail, yTail, false, -1, d, true);
-
-                        if (d == Direction.Up)
-                        {
-                            if (pl.getScore() == 0)
-                            {
-                                xTail = xHead;
-                                yTail = yHead;
-                                yHead--;
-                            }
-                            else
-                            {
-                                xTail = coordinates[coordinates.Count - 2].getX();
-                                yTail = coordinates[coordinates.Count - 2].getY();
-
-                                for (int i = coordinates.Count - 2; i > 0; i--)
-                                {
-                                    xBody[i] = coordinates[i -1].getX();
-                                    yBody[i] = coordinates[i-1].getY();
-                                }
-                                xBody[0] = xHead;
-                                yBody[0] = yHead;
-                                yHead--;
-                            }
-                        }
-                        if (d == Direction.Down)
-                        {
-                            if (pl.getScore() == 0)
-                            {
-                                xTail = xHead;
-                                yTail = yHead;
-                                yHead++;
-                            }
-                            else
-                            {
-                                xTail = coordinates[coordinates.Count - 2].getX();
-                                yTail = coordinates[coordinates.Count - 2].getY();
-
-                                for (int i = coordinates.Count-2; i > 0; i--)
-                                {
-                                    xBody[i] = coordinates[coordinates.Count - i].getX();
-                                    yBody[i] = coordinates[coordinates.Count - i].getY();
-                                }
-                                xBody[0] = xHead;
-                                yBody[0] = yHead;
-                                yHead++;
-                            }
-                        }
-                        if (d == Direction.Left)
-                        {
-                            if (pl.getScore() == 0)
-                            {
-                                xTail = xHead;
-                                yTail = yHead;
-                                xHead--;
-                            }
-                            else if (xBody.Count != 0)
-                            {
-                                xTail = coordinates[coordinates.Count - 2].getX();
-                                yTail = coordinates[coordinates.Count - 2].getY();
-
-                                for (int i = coordinates.Count-2; i > 0; i--)
-                                {
-                                    xBody[i] = coordinates[i - 1].getX();
-                                    yBody[i] = coordinates[i - 1].getY();
-                                }
-                                xBody[0] = xHead;
-                                yBody[0] = yHead;
-                                xHead--;
-                            }
-                        }
-                        if (d == Direction.Right)
-                        {
-                            if (pl.getScore() == 0)
-                            {
-                                xTail = xHead;
-                                yTail = yHead;
-                                xHead++;
-                            }
-                            else if (xBody.Count != 0)
-                            {
-                                //xTail = coordinates[coordinates.Count - 2].getX();
-                                //yTail = coordinates[coordinates.Count - 2].getY();
-
-                                for (int i = coordinates.Count-2 ; i > 0; i--)
-                                {
-                                    xBody[i] = coordinates[i - 1].getX();
-                                    yBody[i] = coordinates[i - 1].getY();
-                                }
-                                xBody[0] = xHead;
-                                yBody[0] = yHead;
-                                xHead++;
-                            }
-                        }
+                        case Direction.Up:
+                            head.setY(head.getY() - 1);
+                            break;
+                        case Direction.Down:
+                            head.setY(head.getY() + 1);
+                            break;
+                        case Direction.Left:
+                            head.setX(head.getX() - 1);
+                            break;
+                        case Direction.Right:
+                            head.setX(head.getX() + 1);
+                            break;
                     }
-                    
-                    if (pl.isAlive() == false || xHead == ROWS || xHead < 0 || yHead == COLS || yHead < 0|| pl.getScore() < 0)
+
+                    if (!pl.isAlive() || head.getX() == ROWS || head.getX() < 0 || head.getY() == COLS || head.getY() < 0 || pl.getScore() < 0 || _gameMatrix[head.getX(), head.getY()] is snakeBody body) // if dead
                     {
                         pl.setStatus(false);
-                        int j = 0;
-                        for (j = coordinates.Count - 1; j >= 0; j--)
+                        for (int i = 1; i < oldCoordinates.Count; i++)
                         {
-                            updateSlot(coordinates[j].getX(), coordinates[j].getY(), false, -1, d, false);
+                            updateSlot(oldCoordinates[i].X, oldCoordinates[i].Y, false, -1, d, false);
                         }
-                        updateSlot(coordinates[0].getX(), coordinates[0].getY(), true, pl.getPlayerType(), d, false);
-                        coordinates.Clear();
+                        updateSlot(oldCoordinates[0].X, oldCoordinates[0].Y, true, pl.getPlayerType(), d, false);
+                        newCoordinates.Clear();
                     }
                     else
                     {
-                        if (_gameMatrix[xHead, yHead] is Food food) // if food
+                        if (_gameMatrix[head.getX(), head.getY()] is Food food) // if food
                         {
-                            if (food.isExpired()==false)
+                            if (food.isExpired() == false)
                             {
+                                food.getTimer().Stop();
                                 pl.updateScore(food.effect());
+                                generateFood(null, EventArgs.Empty);
+                                if (food is not Poop) // player ate apple or cherry
+                                    newCoordinates.Add(new snakeBody(false, pl.getPlayerType(), d, oldCoordinates[oldCoordinates.Count - 1].X, oldCoordinates[oldCoordinates.Count - 1].Y, true));
+                                else
+                                { // player ate poop
+                                    updateSlot(oldCoordinates[oldCoordinates.Count - 1].X, oldCoordinates[oldCoordinates.Count - 1].Y, false, -1, d, true);
+                                    updateSlot(oldCoordinates[oldCoordinates.Count - 2].X, oldCoordinates[oldCoordinates.Count - 2].Y, false, -1, d, true);
+                                    if (newCoordinates.Count == 1) // if only head was left
+                                    {
+                                        pl.setStatus(false); // kill player
+                                        updateSlot(head.getX(), head.getY(), true, pl.getPlayerType(), d, false); // dead head
+                                    }
+                                    else
+                                        newCoordinates.RemoveAt(newCoordinates.Count - 1);
+                                }
+                                if (pl == _playerList[0])
+                                {
+                                    if (pl.getScore() >= 0)
+                                        p1ScoreLabel2.Text = pl.getScore().ToString();
+                                    else
+                                        p1ScoreLabel2.Text = "0";
+                                }
+                                else if (pl.getScore() >= 0)
+                                {
+                                    p2ScoreLabel2.Text = pl.getScore().ToString();
+                                }
+                                else
+                                    p2ScoreLabel2.Text = "0";
                             }
-                            pl.getCoordinates().Add(new snakeBody(false, pl.getPlayerType(), d, xoldTail, yoldTail, true));
-                            if (pl == _playerList[0])
-                                p1ScoreLabel2.Text = pl.getScore().ToString();
                             else
-                                p2ScoreLabel2.Text = pl.getScore().ToString();
-
+                            {
+                                updateSlot(oldCoordinates[oldCoordinates.Count - 1].X, oldCoordinates[oldCoordinates.Count - 1].Y, false, -1, d, true);
+                            }
                         }
-                        coordinates[0].setX(xHead);
-                        coordinates[0].setY(yHead);
-                        for (int i = 0; (pl.getScore() > 0) && (i < xBody.Count); i++)
+                        else // if regular movement, delete tail
+                            updateSlot(oldCoordinates[oldCoordinates.Count - 1].X, oldCoordinates[oldCoordinates.Count - 1].Y, false, -1, d, true);
+                        updateSlot(head.getX(), head.getY(), true, pl.getPlayerType(), d, true); // Move head
+                        if (newCoordinates.Count == 1)
                         {
-                            coordinates[i + 1].setX(xBody[i]);
-                            coordinates[i + 1].setY(yBody[i]);
+                            pl.setStatus(false); // kill player
+                            updateSlot(head.getX(), head.getY(), true, pl.getPlayerType(), d, false); // dead head
                         }
-                        coordinates[coordinates.Count - 1].setX(xTail);
-                        coordinates[coordinates.Count - 1].setY(yTail);
-                        updateSlot(xHead, yHead, true, pl.getPlayerType(), d, true);
-                        for (int i = 0; (pl.getScore() > 0) && (i < xBody.Count); i++)
-                        {
-                            updateSlot(xBody[i], yBody[i], false, pl.getPlayerType(), d, true);
-                        }
-                        updateSlot(xTail, yTail, false, pl.getPlayerType(), d, true);
+                        else
+                            updateSlot(newCoordinates[1].getX(), newCoordinates[1].getY(), false, pl.getPlayerType(), d, true); // Move one before head
                     }
                 }
             }
-        
-            this.Invalidate();
-            // changes of snake and board
         }
 
         public void updateSlot(int x, int y, bool isHead, int type, Direction d, bool status)
@@ -307,19 +236,15 @@ namespace Snake
             Point p = _gameMatrix[x, y].getPicture().Location;
             this.Controls.Remove(_gameMatrix[x, y].getPicture());
             if (type == -1)
-            {
                 _gameMatrix[x, y] = new Slot();
-            }
             else
             {
                 _gameMatrix[x, y] = new snakeBody(isHead, type, d, x, y, status);
                 _gameMatrix[x, y].getPicture().BackgroundImage = rotatePicture(d, isHead, type, status);
-
             }
             _gameMatrix[x, y].getPicture().Location = p;
             _gameMatrix[x, y].getPicture().Size = new Size(SIZE_X, SIZE_Y);
             this.Controls.Add(_gameMatrix[x, y].getPicture());
-           
         }
 
         private void generateFood(object sender, EventArgs e)
@@ -327,13 +252,13 @@ namespace Snake
             Random rnd = new Random();
             Timer timer = null;
             int num = rnd.Next(3);
-          
+
             while (1 != 2)
             {
                 int x = rnd.Next(ROWS);
                 int y = rnd.Next(COLS);
- 
-                if (_gameMatrix[x,y] is Slot)
+
+                if (_gameMatrix[x, y] is Slot)
                 {
                     Point p = _gameMatrix[x, y].getPicture().Location;
                     this.Controls.Remove(_gameMatrix[x, y].getPicture());
@@ -343,11 +268,11 @@ namespace Snake
                         Apple s = new Apple();
                         _gameMatrix[x, y] = s;
                         timer = s.getTimer();
-                        
+
                     }
                     if (num == (int)foodType.Cherry)
                     {
-                        Cherry s  = new Cherry();
+                        Cherry s = new Cherry();
                         _gameMatrix[x, y] = s;
                         timer = s.getTimer();
                     }
@@ -360,7 +285,7 @@ namespace Snake
                     }
 
                     timer.Start();
-                    _gameMatrix[x, y].getPicture().Location= p;
+                    _gameMatrix[x, y].getPicture().Location = p;
                     _gameMatrix[x, y].getPicture().Size = new Size(SIZE_X, SIZE_Y);
                     this.Controls.Add(_gameMatrix[x, y].getPicture());
                     break;
@@ -438,7 +363,6 @@ namespace Snake
 
         private void initializeMatrix()
         {
-            this.AutoScroll = true;
             int y = 0;
             for (int i = 0; i < ROWS; i++)
             {
@@ -470,7 +394,7 @@ namespace Snake
                     Direction d = _playerList[i].getCoordinates()[0].getDirection();
                     if (_playerList[i].getInput() == type)
                     {
-                        if (type == "Keyboard (WASD)"  || type == "Keyboard (Arrows)")
+                        if (type == "Keyboard (WASD)" || type == "Keyboard (Arrows)")
                         {
                             switch (e.KeyCode)
                             {
