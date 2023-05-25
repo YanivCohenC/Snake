@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Snake
+﻿namespace Snake
 {
+    [Serializable]
     internal class Cherry : Food
     {
         public Cherry()
@@ -19,6 +14,11 @@ namespace Snake
         public override int effect()
         {
             return 2;
+        }
+
+        public bool isExpired()
+        {
+            return _expired;
         }
 
         public PictureBox getPicture()

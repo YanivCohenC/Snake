@@ -54,6 +54,11 @@
             _status = status;
         }
 
+        public bool getStatus()
+        {
+            return _status;
+        }
+
         public void updateScore(int score)
         {
             _playerScore += score;

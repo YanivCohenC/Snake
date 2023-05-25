@@ -1,31 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.IO;
-using System.Xml.Linq;
-using static System.Windows.Forms.DataFormats;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+﻿using System.Data;
 using Timer = System.Windows.Forms.Timer;
-using static System.Net.Mime.MediaTypeNames;
 using Image = System.Drawing.Image;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text;
 
 namespace Snake
 {
     public partial class Board : Form
     {
-        public const int ROWS = 20;
-        public const int COLS = 20;
-        public const int SIZE_X = 32;
-        public const int SIZE_Y = 32;
+        private const int ROWS = 20;
+        private const int COLS = 20;
+        private const int SIZE_X = 32;
+        private const int SIZE_Y = 32;
 
         private Menu mainMenu;
         private List<Player> _playerList; // For scoreboard
@@ -87,7 +74,8 @@ namespace Snake
                 updateSlot(13, 18, true, _playerList[1].getPlayerType(), Direction.Up, true);
             }
 
-
+            for (int i = 0; i < _playerList.Count; i++)
+                _playerList[i].setStatus(true);
 
             countdownTimer = new Timer();
             countdownTimer.Interval = 1000; // 1 second
@@ -114,6 +102,7 @@ namespace Snake
         static int count = 5;
         private void countDown_Tick(object sender, EventArgs e)
         {
+            countdownLabel.Show();
             count--;
             countdownLabel.Text = "Game will start in: " + count;
 
@@ -121,8 +110,6 @@ namespace Snake
             {
                 countdownTimer.Stop();
                 countdownLabel.Hide();
-                for (int i = 0; i < _playerList.Count; i++)
-                    _playerList[i].setStatus(true);
                 boardTimer.Start();
                 generateFoodTimer.Start();
                 generateFood(null, EventArgs.Empty);
@@ -133,6 +120,7 @@ namespace Snake
         private void boardTimer_Tick(object sender, EventArgs e)
         {
             int temp = 0;
+            bool finalStatus = true;
             foreach (Player pl in _playerList)
             {
                 if (pl.isAlive())
@@ -166,7 +154,7 @@ namespace Snake
 
                     if (!pl.isAlive() || head.getX() == ROWS || head.getX() < 0 || head.getY() == COLS || head.getY() < 0 || pl.getScore() < 0 || _gameMatrix[head.getX(), head.getY()] is snakeBody body) // if dead
                     {
-                        pl.setStatus(false);
+                        pl.setStatus(false); // kill player
                         for (int i = 1; i < oldCoordinates.Count; i++)
                         {
                             updateSlot(oldCoordinates[i].X, oldCoordinates[i].Y, false, -1, d, false);
@@ -229,9 +217,17 @@ namespace Snake
                     }
                 }
             }
+            
+            if (_playerList.Count == 2)
+            {
+                if (_playerList[0].getStatus() == false && _playerList[1].getStatus() == false) // if both players died
+                    showDeathScreen();
+            }
+            else if (_playerList[0].getStatus() == false) // if the only player left died
+                showDeathScreen();
         }
 
-        public void updateSlot(int x, int y, bool isHead, int type, Direction d, bool status)
+        private void updateSlot(int x, int y, bool isHead, int type, Direction d, bool status)
         {
             Point p = _gameMatrix[x, y].getPicture().Location;
             this.Controls.Remove(_gameMatrix[x, y].getPicture());
@@ -251,14 +247,22 @@ namespace Snake
         {
             Random rnd = new Random();
             Timer timer = null;
+            bool foodExists = false;
             int num = rnd.Next(3);
-
+            if (num == (int)foodType.Poop)
+            {
+                foreach (Slot s in _gameMatrix)
+                    if ((s is Apple && ((Apple)s).isExpired() == false)  || (s is Cherry && ((Cherry)s).isExpired() == false)) // if there is food
+                        foodExists = true;
+                if (foodExists == false)
+                    num = rnd.Next(2);
+            }
             while (1 != 2)
             {
                 int x = rnd.Next(ROWS);
                 int y = rnd.Next(COLS);
 
-                if (_gameMatrix[x, y] is Slot)
+                if (_gameMatrix[x, y] is Slot && _gameMatrix[x, y] is not snakeBody)
                 {
                     Point p = _gameMatrix[x, y].getPicture().Location;
                     this.Controls.Remove(_gameMatrix[x, y].getPicture());
@@ -293,7 +297,7 @@ namespace Snake
             }
         }
 
-        public Image rotatePicture(Direction d, bool isHead, int type, bool status)
+        private Image rotatePicture(Direction d, bool isHead, int type, bool status)
         {
             Image img = null;
             switch (type)
@@ -353,6 +357,45 @@ namespace Snake
             return img;
         }
 
+        private void showDeathScreen()
+        {
+            countdownTimer.Stop();
+            boardTimer.Stop();
+            generateFoodTimer.Stop();
+            PauseMenu pause = new PauseMenu();
+            pause.setDeath(true);
+            pause.ShowDialog();
+            if (pause.getChoice() == choice.saveExit)
+                saveAndExit();
+        }
+
+        private void saveAndExit()
+        {
+            SerializeNow();
+        }
+
+        public void SerializeNow()
+        {
+            Stream s = new FileStream("savegame.json", FileMode.Create);
+
+            var data = JsonSerializer.Serialize(_playerList);
+            byte[] f = new UTF8Encoding(true).GetBytes(data);
+            s.Write(f, 0, f.Length);
+            byte[] d = new byte[] { 0x0 };
+            s.Write(d, 0, d.Length);
+            s.Close();
+        }
+        //public void DeSerializeNow()
+        //{
+        //    ClassToSerialize c = new ClassToSerialize();
+        //    File f = new File("temp.dat");
+        //    Stream s = f.Open(FileMode.Open);
+        //    BinaryFormatter b = new BinaryFormatter();
+        //    c = (ClassToSerialize)b.Deserialize(s);
+        //    Console.WriteLine(c.name);
+        //    s.Close();
+        //}
+
         private void Board_FormClosed(object sender, FormClosedEventArgs e)
         {
             // save data after game
@@ -387,6 +430,29 @@ namespace Snake
             else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
                 type = "Keyboard (Arrows)";
             //TODO add controller
+            if (e.KeyCode == Keys.Escape)
+            {
+                foreach (Slot s in _gameMatrix)
+                    if (s is Food f)
+                        f.getTimer().Stop();
+                countdownTimer.Stop();
+                boardTimer.Stop();
+                generateFoodTimer.Stop();
+                PauseMenu pause = new PauseMenu();
+                pause.setDeath(false);
+                pause.ShowDialog();
+                if (pause.getChoice() == choice.Resume)
+                {
+                    count = 5;
+                    countdownLabel.Text = "Game will start in: 5";
+                    countdownLabel.Show();
+                    countdownTimer.Start();
+                    foreach (Slot s in _gameMatrix)
+                        if (s is Food f)
+                            f.getTimer().Start();
+                }
+
+            }
             for (int i = 0; i < _playerList.Count; i++)
             {
                 if (_playerList[i].isAlive() == true)

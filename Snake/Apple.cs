@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Timer = System.Windows.Forms.Timer;
-
-namespace Snake
+﻿namespace Snake
 {
+    [Serializable]
     internal class Apple : Food
     {
        
@@ -21,6 +15,11 @@ namespace Snake
         public override int effect()
         {
             return 1;
+        }
+
+        public bool isExpired()
+        {
+            return _expired;
         }
 
         public PictureBox getPicture()
