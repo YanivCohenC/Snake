@@ -145,8 +145,8 @@
             Name = "Board";
             StartPosition = FormStartPosition.CenterScreen;
             Load += Board_Load;
-            Shown += Board_Shown;
             KeyDown += Board_KeyDown;
+            FormClosed += Board_FormClosed;
             ResumeLayout(false);
             PerformLayout();
         }

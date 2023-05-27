@@ -12,6 +12,7 @@ public partial class Menu : Form
     private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)] string lParam);
 
     private List<string> _controlList;
+    private static Dictionary<string, int> _scoreboard;
 
     public Menu()
     {
@@ -27,6 +28,8 @@ public partial class Menu : Form
         p1Controller.Text = p2Controller.Text = "Choose your controller:";
         p1Controller.Items.AddRange(_controlList.ToArray<String>());
         p2Controller.Items.AddRange(_controlList.ToArray<String>());
+
+        _scoreboard = new Dictionary<string, int>();
     }
 
     private void newGame_Click(object sender, EventArgs e)
@@ -35,7 +38,6 @@ public partial class Menu : Form
             MessageBox.Show("Please choose a controller");
         else
         {
-            //new Form and ful screen
             this.Hide();
             Board board = new Board(this);
             board.ShowDialog();
@@ -49,7 +51,10 @@ public partial class Menu : Form
 
     private void openScoreBoard_Click(object sender, EventArgs e)
     {
-
+        Hide();
+        Scoreboard score = new Scoreboard();
+        score.ShowDialog();
+        Show();
     }
 
     private void quitGame_Click(object sender, EventArgs e)
@@ -96,6 +101,11 @@ public partial class Menu : Form
     public string getP2Controller()
     {
         return p2Controller.Text;
+    }
+
+    public static Dictionary<string, int> getScoreboard()
+    {
+        return _scoreboard;
     }
 
     private void p1Type0_Click(object sender, EventArgs e)

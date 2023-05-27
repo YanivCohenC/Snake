@@ -1,5 +1,6 @@
 ﻿namespace Snake
 {
+    [Serializable]
     internal class Player
     {
         private string _playerName;
@@ -8,6 +9,7 @@
         private string _playerInput;
         private List<snakeBody> _coordinates;
         private bool _status;
+        private bool _locked;
 
 
         public Player(string playerName, string playerInput, int snakeType = 0, int playerScore = 0, bool status = false)
@@ -18,6 +20,7 @@
             _playerInput = playerInput;
             _coordinates = new List<snakeBody>();
             _status = status;
+            _locked = false;
         }
 
         public int getScore()
@@ -39,6 +42,11 @@
             return _snakeType;
         }
 
+        public bool isLocked()
+        {
+            return _locked;
+        }
+
         public List<snakeBody> getCoordinates()
         {
             return _coordinates;
@@ -57,6 +65,16 @@
         public bool getStatus()
         {
             return _status;
+        }
+
+        public void setLocked(bool locked)
+        {
+            _locked = locked;
+        }
+
+        public void setPlayerName(string playerName)
+        {
+            _playerName = playerName;
         }
 
         public void updateScore(int score)

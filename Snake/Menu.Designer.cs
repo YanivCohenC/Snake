@@ -31,7 +31,7 @@ partial class Menu
         pictureBox1 = new PictureBox();
         button1 = new Button();
         button2 = new Button();
-        button3 = new Button();
+        openScoreboard = new Button();
         button4 = new Button();
         p1Controller = new ComboBox();
         label1 = new Label();
@@ -54,9 +54,9 @@ partial class Menu
         // 
         // pictureBox1
         // 
-        pictureBox1.BackgroundImageLayout = ImageLayout.Stretch;
-        pictureBox1.BackgroundImage = Properties.Resources.SnakeLogo;
         pictureBox1.BackColor = Color.Transparent;
+        pictureBox1.BackgroundImage = Properties.Resources.SnakeLogo;
+        pictureBox1.BackgroundImageLayout = ImageLayout.Stretch;
         pictureBox1.Location = new Point(87, 39);
         pictureBox1.Name = "pictureBox1";
         pictureBox1.Size = new Size(845, 245);
@@ -85,15 +85,16 @@ partial class Menu
         button2.Text = "Continue";
         button2.UseVisualStyleBackColor = true;
         // 
-        // button3
+        // openScoreboard
         // 
-        button3.Location = new Point(424, 540);
-        button3.Margin = new Padding(2, 1, 2, 1);
-        button3.Name = "button3";
-        button3.Size = new Size(171, 45);
-        button3.TabIndex = 3;
-        button3.Text = "Scoreboard";
-        button3.UseVisualStyleBackColor = true;
+        openScoreboard.Location = new Point(424, 540);
+        openScoreboard.Margin = new Padding(2, 1, 2, 1);
+        openScoreboard.Name = "openScoreboard";
+        openScoreboard.Size = new Size(171, 45);
+        openScoreboard.TabIndex = 3;
+        openScoreboard.Text = "Scoreboard";
+        openScoreboard.UseVisualStyleBackColor = true;
+        openScoreboard.Click += openScoreBoard_Click;
         // 
         // button4
         // 
@@ -111,7 +112,7 @@ partial class Menu
         p1Controller.DropDownStyle = ComboBoxStyle.DropDownList;
         p1Controller.FormattingEnabled = true;
         p1Controller.Location = new Point(156, 456);
-        p1Controller.Margin = new Padding(2, 2, 2, 2);
+        p1Controller.Margin = new Padding(2);
         p1Controller.Name = "p1Controller";
         p1Controller.Size = new Size(181, 23);
         p1Controller.TabIndex = 5;
@@ -146,7 +147,7 @@ partial class Menu
         p2Controller.DropDownStyle = ComboBoxStyle.DropDownList;
         p2Controller.FormattingEnabled = true;
         p2Controller.Location = new Point(751, 456);
-        p2Controller.Margin = new Padding(2, 2, 2, 2);
+        p2Controller.Margin = new Padding(2);
         p2Controller.Name = "p2Controller";
         p2Controller.Size = new Size(181, 23);
         p2Controller.TabIndex = 7;
@@ -155,7 +156,7 @@ partial class Menu
         // p1Name
         // 
         p1Name.Location = new Point(156, 399);
-        p1Name.Margin = new Padding(2, 2, 2, 2);
+        p1Name.Margin = new Padding(2);
         p1Name.MaxLength = 13;
         p1Name.Name = "p1Name";
         p1Name.PlaceholderText = "Enter Name";
@@ -165,7 +166,7 @@ partial class Menu
         // p2Name
         // 
         p2Name.Location = new Point(751, 399);
-        p2Name.Margin = new Padding(2, 2, 2, 2);
+        p2Name.Margin = new Padding(2);
         p2Name.MaxLength = 13;
         p2Name.Name = "p2Name";
         p2Name.PlaceholderText = "Enter Name";
@@ -177,7 +178,7 @@ partial class Menu
         p1Type0.BackColor = Color.LimeGreen;
         p1Type0.BackgroundImageLayout = ImageLayout.Center;
         p1Type0.Location = new Point(87, 515);
-        p1Type0.Margin = new Padding(2, 2, 2, 2);
+        p1Type0.Margin = new Padding(2);
         p1Type0.Name = "p1Type0";
         p1Type0.Size = new Size(50, 50);
         p1Type0.TabIndex = 11;
@@ -189,7 +190,7 @@ partial class Menu
         p1Type1.BackColor = Color.Red;
         p1Type1.BackgroundImageLayout = ImageLayout.Center;
         p1Type1.Location = new Point(187, 515);
-        p1Type1.Margin = new Padding(2, 2, 2, 2);
+        p1Type1.Margin = new Padding(2);
         p1Type1.Name = "p1Type1";
         p1Type1.Size = new Size(50, 50);
         p1Type1.TabIndex = 12;
@@ -201,7 +202,7 @@ partial class Menu
         p1Type2.BackColor = Color.Blue;
         p1Type2.BackgroundImageLayout = ImageLayout.Center;
         p1Type2.Location = new Point(287, 515);
-        p1Type2.Margin = new Padding(2, 2, 2, 2);
+        p1Type2.Margin = new Padding(2);
         p1Type2.Name = "p1Type2";
         p1Type2.Size = new Size(50, 50);
         p1Type2.TabIndex = 13;
@@ -213,7 +214,7 @@ partial class Menu
         p2Type2.BackColor = Color.Blue;
         p2Type2.BackgroundImageLayout = ImageLayout.Center;
         p2Type2.Location = new Point(887, 515);
-        p2Type2.Margin = new Padding(2, 2, 2, 2);
+        p2Type2.Margin = new Padding(2);
         p2Type2.Name = "p2Type2";
         p2Type2.Size = new Size(50, 50);
         p2Type2.TabIndex = 16;
@@ -225,7 +226,7 @@ partial class Menu
         p2Type1.BackColor = Color.Red;
         p2Type1.BackgroundImageLayout = ImageLayout.Center;
         p2Type1.Location = new Point(787, 515);
-        p2Type1.Margin = new Padding(2, 2, 2, 2);
+        p2Type1.Margin = new Padding(2);
         p2Type1.Name = "p2Type1";
         p2Type1.Size = new Size(50, 50);
         p2Type1.TabIndex = 15;
@@ -237,7 +238,7 @@ partial class Menu
         p2Type0.BackColor = Color.FromArgb(0, 192, 0);
         p2Type0.BackgroundImageLayout = ImageLayout.Center;
         p2Type0.Location = new Point(687, 515);
-        p2Type0.Margin = new Padding(2, 2, 2, 2);
+        p2Type0.Margin = new Padding(2);
         p2Type0.Name = "p2Type0";
         p2Type0.Size = new Size(50, 50);
         p2Type0.TabIndex = 14;
@@ -317,7 +318,7 @@ partial class Menu
         Controls.Add(label1);
         Controls.Add(p1Controller);
         Controls.Add(button4);
-        Controls.Add(button3);
+        Controls.Add(openScoreboard);
         Controls.Add(button2);
         Controls.Add(button1);
         Controls.Add(pictureBox1);
@@ -336,7 +337,7 @@ partial class Menu
     private PictureBox pictureBox1;
     private Button button1;
     private Button button2;
-    private Button button3;
+    private Button openScoreboard;
     private Button button4;
     private ComboBox p1Controller;
     private Label label1;

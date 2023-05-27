@@ -4,6 +4,8 @@ using Image = System.Drawing.Image;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text;
+using System.IO;
+using System.Runtime.Serialization.Json;
 
 namespace Snake
 {
@@ -14,9 +16,9 @@ namespace Snake
         private const int SIZE_X = 32;
         private const int SIZE_Y = 32;
 
-        private Menu mainMenu;
-        private List<Player> _playerList; // For scoreboard
-        private Slot[,] _gameMatrix; // For all of the elements on board
+        private Menu _mainMenu;
+        static private List<Player> _playerList; // For scoreboard
+        static private Slot[,] _gameMatrix; // For all of the elements on board
 
         private Timer countdownTimer;
         private Timer boardTimer;
@@ -26,26 +28,27 @@ namespace Snake
         {
             InitializeComponent();
 
-            mainMenu = other;
+            _mainMenu = other;
             _playerList = new List<Player>();
             _gameMatrix = new Slot[ROWS, COLS];
         }
 
         private void Board_Load(object sender, EventArgs e)
         {
-            string p1Name = p1NameLabel.Text = mainMenu.getP1Name();
-            string p2Name = p2NameLabel.Text = mainMenu.getP2Name();
-            string p2Controller = mainMenu.getP2Controller();
+            string p1Name = p1NameLabel.Text = _mainMenu.getP1Name();
+            string p2Name = p2NameLabel.Text = _mainMenu.getP2Name();
+            string p2Controller = _mainMenu.getP2Controller();
 
             if (p1Name == "")
             {
                 p1NameLabel.Text = p1Name = "Snake 1";
             }
 
-            Player p1 = new Player(p1Name, mainMenu.getP1Controller(), mainMenu.getP1Type());
+            Player p1 = new Player(p1Name, _mainMenu.getP1Controller(), _mainMenu.getP1Type());
             _playerList.Add(p1);
             _playerList[0].getCoordinates().Add(new snakeBody(true, p1.getPlayerType(), Direction.Down, 6, 1, true));
             _playerList[0].getCoordinates().Add(new snakeBody(false, p1.getPlayerType(), Direction.Down, 6, 0, true));
+            _playerList[0].setPlayerName(p1Name);
 
             p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
             if (p2Controller != "" && p2Controller != "Disabled")
@@ -56,10 +59,11 @@ namespace Snake
                 }
 
 
-                Player p2 = new Player(p1Name, p2Controller, mainMenu.getP2Type());
+                Player p2 = new Player(p1Name, p2Controller, _mainMenu.getP2Type());
                 _playerList.Add(p2);
                 _playerList[1].getCoordinates().Add(new snakeBody(true, p2.getPlayerType(), (int)Direction.Up, 13, 18, true));
                 _playerList[1].getCoordinates().Add(new snakeBody(false, p2.getPlayerType(), (int)Direction.Up, 13, 19, true));
+                _playerList[1].setPlayerName(p2Name);
                 p2NameLabel.Visible = p2ScoreLabel1.Visible = p2ScoreLabel2.Visible = true;
             }
             initializeMatrix();
@@ -92,12 +96,6 @@ namespace Snake
 
             //readMatrix();
         }
-
-        private void Board_Shown(object sender, EventArgs e)
-        {
-
-        }
-
 
         static int count = 5;
         private void countDown_Tick(object sender, EventArgs e)
@@ -159,7 +157,7 @@ namespace Snake
                         {
                             updateSlot(oldCoordinates[i].X, oldCoordinates[i].Y, false, -1, d, false);
                         }
-                        updateSlot(oldCoordinates[0].X, oldCoordinates[0].Y, true, pl.getPlayerType(), d, false);
+                        updateSlot(oldCoordinates[0].X, oldCoordinates[0].Y, true, pl.getPlayerType(), d, false); // dead head
                         newCoordinates.Clear();
                     }
                     else
@@ -217,7 +215,6 @@ namespace Snake
                     }
                 }
             }
-            
             if (_playerList.Count == 2)
             {
                 if (_playerList[0].getStatus() == false && _playerList[1].getStatus() == false) // if both players died
@@ -225,6 +222,21 @@ namespace Snake
             }
             else if (_playerList[0].getStatus() == false) // if the only player left died
                 showDeathScreen();
+            foreach (Player p in _playerList)
+            {
+                p.setLocked(false);
+            }
+        }
+
+        private void updateScoreboard(Player pl)
+        {
+            Dictionary<string, int> p = Menu.getScoreboard();
+            if (p.ContainsKey(pl.getPlayerName()) && p[pl.getPlayerName()] < pl.getScore())
+            {
+                p[pl.getPlayerName()] = pl.getScore();
+            }
+            else if (p.ContainsKey(pl.getPlayerName()) == false)
+                p.Add(pl.getPlayerName(), pl.getScore());
         }
 
         private void updateSlot(int x, int y, bool isHead, int type, Direction d, bool status)
@@ -362,11 +374,16 @@ namespace Snake
             countdownTimer.Stop();
             boardTimer.Stop();
             generateFoodTimer.Stop();
+            foreach (Player pl in _playerList)
+                updateScoreboard(pl);
             PauseMenu pause = new PauseMenu();
             pause.setDeath(true);
             pause.ShowDialog();
             if (pause.getChoice() == choice.saveExit)
-                saveAndExit();
+            {
+                Close();
+                _mainMenu.Show();
+            }
         }
 
         private void saveAndExit()
@@ -374,34 +391,30 @@ namespace Snake
             SerializeNow();
         }
 
-        public void SerializeNow()
+        public static void SerializeNow()
         {
-            Stream s = new FileStream("savegame.json", FileMode.Create);
-
-            var data = JsonSerializer.Serialize(_playerList);
-            byte[] f = new UTF8Encoding(true).GetBytes(data);
-            s.Write(f, 0, f.Length);
-            byte[] d = new byte[] { 0x0 };
-            s.Write(d, 0, d.Length);
-            s.Close();
+            using (FileStream fileStream = new FileStream("savegame.json", FileMode.Create))
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(_playerList.GetType());
+                //serializer.WriteObject(fileStream, _playerList);
+                serializer = new DataContractJsonSerializer(_gameMatrix.GetType());
+                serializer.WriteObject(fileStream, _gameMatrix);
+            }
         }
-        //public void DeSerializeNow()
-        //{
-        //    ClassToSerialize c = new ClassToSerialize();
-        //    File f = new File("temp.dat");
-        //    Stream s = f.Open(FileMode.Open);
-        //    BinaryFormatter b = new BinaryFormatter();
-        //    c = (ClassToSerialize)b.Deserialize(s);
-        //    Console.WriteLine(c.name);
-        //    s.Close();
-        //}
+        public T DeSerializeNow<T>()
+        {
+            using (FileStream fileStream = new FileStream("savegame.json", FileMode.Open))
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+                return (T)serializer.ReadObject(fileStream);
+            }
+        }
 
         private void Board_FormClosed(object sender, FormClosedEventArgs e)
         {
             // save data after game
             // warning message exit without saving? or with
-
-            mainMenu.Show();
+            count = 5;
         }
 
         private void initializeMatrix()
@@ -451,11 +464,15 @@ namespace Snake
                         if (s is Food f)
                             f.getTimer().Start();
                 }
-
+                else if (pause.getChoice() == choice.saveExit)
+                {
+                    Board.SerializeNow();
+                    Close();
+                }
             }
             for (int i = 0; i < _playerList.Count; i++)
             {
-                if (_playerList[i].isAlive() == true)
+                if (_playerList[i].isAlive() == true && _playerList[i].isLocked() == false)
                 {
                     Direction d = _playerList[i].getCoordinates()[0].getDirection();
                     if (_playerList[i].getInput() == type)
@@ -468,23 +485,28 @@ namespace Snake
                                 case Keys.W:
                                     if (d == Direction.Left || d == Direction.Right)
                                         d = Direction.Up;
+                                    _playerList[i].setLocked(true);
                                     break;
                                 case Keys.Left:
                                 case Keys.A:
                                     if (d == Direction.Up || d == Direction.Down)
                                         d = Direction.Left;
+                                    _playerList[i].setLocked(true);
                                     break;
                                 case Keys.Down:
                                 case Keys.S:
                                     if (d == Direction.Left || d == Direction.Right)
                                         d = Direction.Down;
+                                    _playerList[i].setLocked(true);
                                     break;
                                 case Keys.Right:
                                 case Keys.D:
                                     if (d == Direction.Up || d == Direction.Down)
                                         d = Direction.Right;
+                                    _playerList[i].setLocked(true);
                                     break;
                             }
+
                         }
                     }
                     _playerList[i].getCoordinates()[0].setDirection(d);
