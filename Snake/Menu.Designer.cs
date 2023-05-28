@@ -30,7 +30,7 @@ partial class Menu
     {
         pictureBox1 = new PictureBox();
         button1 = new Button();
-        button2 = new Button();
+        continueGame = new Button();
         openScoreboard = new Button();
         button4 = new Button();
         p1Controller = new ComboBox();
@@ -74,16 +74,17 @@ partial class Menu
         button1.UseVisualStyleBackColor = true;
         button1.Click += newGame_Click;
         // 
-        // button2
+        // continueGame
         // 
-        button2.Enabled = false;
-        button2.Location = new Point(424, 440);
-        button2.Margin = new Padding(2, 1, 2, 1);
-        button2.Name = "button2";
-        button2.Size = new Size(171, 45);
-        button2.TabIndex = 2;
-        button2.Text = "Continue";
-        button2.UseVisualStyleBackColor = true;
+        continueGame.Enabled = false;
+        continueGame.Location = new Point(424, 440);
+        continueGame.Margin = new Padding(2, 1, 2, 1);
+        continueGame.Name = "continueGame";
+        continueGame.Size = new Size(171, 45);
+        continueGame.TabIndex = 2;
+        continueGame.Text = "Continue";
+        continueGame.UseVisualStyleBackColor = true;
+        continueGame.Click += continueGame_Click;
         // 
         // openScoreboard
         // 
@@ -319,7 +320,7 @@ partial class Menu
         Controls.Add(p1Controller);
         Controls.Add(button4);
         Controls.Add(openScoreboard);
-        Controls.Add(button2);
+        Controls.Add(continueGame);
         Controls.Add(button1);
         Controls.Add(pictureBox1);
         DoubleBuffered = true;
@@ -336,7 +337,7 @@ partial class Menu
 
     private PictureBox pictureBox1;
     private Button button1;
-    private Button button2;
+    private Button continueGame;
     private Button openScoreboard;
     private Button button4;
     private ComboBox p1Controller;

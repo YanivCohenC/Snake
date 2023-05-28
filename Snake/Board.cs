@@ -1,11 +1,8 @@
 ﻿using System.Data;
 using Timer = System.Windows.Forms.Timer;
 using Image = System.Drawing.Image;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text;
-using System.IO;
-using System.Runtime.Serialization.Json;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 namespace Snake
 {
@@ -17,8 +14,8 @@ namespace Snake
         private const int SIZE_Y = 32;
 
         private Menu _mainMenu;
-        static private List<Player> _playerList; // For scoreboard
-        static private Slot[,] _gameMatrix; // For all of the elements on board
+        private List<Player> _playerList; // For scoreboard
+        private Slot[,] _gameMatrix; // For all of the elements on board
 
         private Timer countdownTimer;
         private Timer boardTimer;
@@ -35,66 +32,115 @@ namespace Snake
 
         private void Board_Load(object sender, EventArgs e)
         {
-            string p1Name = p1NameLabel.Text = _mainMenu.getP1Name();
-            string p2Name = p2NameLabel.Text = _mainMenu.getP2Name();
-            string p2Controller = _mainMenu.getP2Controller();
-
-            if (p1Name == "")
+            if (_mainMenu.isContinue() == false)
             {
-                p1NameLabel.Text = p1Name = "Snake 1";
-            }
+                if (File.Exists("savegame.dat") == true)
+                    File.Delete("savegame.dat");
+                string p1Name = p1NameLabel.Text = _mainMenu.getP1Name();
+                string p2Name = p2NameLabel.Text = _mainMenu.getP2Name();
+                string p2Controller = _mainMenu.getP2Controller();
 
-            Player p1 = new Player(p1Name, _mainMenu.getP1Controller(), _mainMenu.getP1Type());
-            _playerList.Add(p1);
-            _playerList[0].getCoordinates().Add(new snakeBody(true, p1.getPlayerType(), Direction.Down, 6, 1, true));
-            _playerList[0].getCoordinates().Add(new snakeBody(false, p1.getPlayerType(), Direction.Down, 6, 0, true));
-            _playerList[0].setPlayerName(p1Name);
-
-            p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
-            if (p2Controller != "" && p2Controller != "Disabled")
-            {
-                if (p2Name == "")
+                if (p1Name == "")
                 {
-                    p2NameLabel.Text = p2Name = "Snake 2";
+                    p1NameLabel.Text = p1Name = "Snake 1";
                 }
 
+                Player p1 = new Player(p1Name, _mainMenu.getP1Controller(), _mainMenu.getP1Type());
+                _playerList.Add(p1);
+                _playerList[0].getCoordinates().Add(new snakeBody(true, p1.getPlayerType(), Direction.Down, 6, 1, true));
+                _playerList[0].getCoordinates().Add(new snakeBody(false, p1.getPlayerType(), Direction.Down, 6, 0, true));
+                _playerList[0].setPlayerName(p1Name);
 
-                Player p2 = new Player(p1Name, p2Controller, _mainMenu.getP2Type());
-                _playerList.Add(p2);
-                _playerList[1].getCoordinates().Add(new snakeBody(true, p2.getPlayerType(), (int)Direction.Up, 13, 18, true));
-                _playerList[1].getCoordinates().Add(new snakeBody(false, p2.getPlayerType(), (int)Direction.Up, 13, 19, true));
-                _playerList[1].setPlayerName(p2Name);
-                p2NameLabel.Visible = p2ScoreLabel1.Visible = p2ScoreLabel2.Visible = true;
+                p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
+                if (p2Controller != "" && p2Controller != "Disabled")
+                {
+                    if (p2Name == "")
+                    {
+                        p2NameLabel.Text = p2Name = "Snake 2";
+                    }
+
+
+                    Player p2 = new Player(p1Name, p2Controller, _mainMenu.getP2Type());
+                    _playerList.Add(p2);
+                    _playerList[1].getCoordinates().Add(new snakeBody(true, p2.getPlayerType(), (int)Direction.Up, 13, 18, true));
+                    _playerList[1].getCoordinates().Add(new snakeBody(false, p2.getPlayerType(), (int)Direction.Up, 13, 19, true));
+                    _playerList[1].setPlayerName(p2Name);
+                    p2NameLabel.Visible = p2ScoreLabel1.Visible = p2ScoreLabel2.Visible = true;
+                }
+                initializeMatrix();
+
+                updateSlot(6, 0, false, _playerList[0].getPlayerType(), Direction.Down, true);
+                updateSlot(6, 1, true, _playerList[0].getPlayerType(), Direction.Down, true);
+
+
+                if (_playerList.Count > 1)
+                {
+                    updateSlot(13, 19, false, _playerList[1].getPlayerType(), Direction.Up, true);
+                    updateSlot(13, 18, true, _playerList[1].getPlayerType(), Direction.Up, true);
+                }
+
+                for (int i = 0; i < _playerList.Count; i++)
+                    _playerList[i].setStatus(true);
+
+                countdownTimer = new Timer();
+                countdownTimer.Interval = 1000; // 1 second
+                countdownTimer.Tick += countDown_Tick;
+                countdownTimer.Start();
+
+                boardTimer = new Timer();
+                boardTimer.Interval = 200;
+                boardTimer.Tick += boardTimer_Tick;
+
+                generateFoodTimer = new Timer();
+                generateFoodTimer.Interval = 7000; // 7 seconds
+                generateFoodTimer.Tick += generateFood;
             }
-            initializeMatrix();
-
-            updateSlot(6, 0, false, _playerList[0].getPlayerType(), Direction.Down, true);
-            updateSlot(6, 1, true, _playerList[0].getPlayerType(), Direction.Down, true);
-
-
-            if (_playerList.Count > 1)
+            else
             {
-                updateSlot(13, 19, false, _playerList[1].getPlayerType(), Direction.Up, true);
-                updateSlot(13, 18, true, _playerList[1].getPlayerType(), Direction.Up, true);
+                Stream stream = File.Open("savegame.dat", FileMode.Open);
+                List<exportPlayer> temp = new List<exportPlayer>();
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
+                temp = (List<exportPlayer>)binaryFormatter.Deserialize(stream);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
+                stream.Close();
+                File.Delete("savegame.dat");
+                _mainMenu.hideContinue();
+                foreach (var exportPlayer in temp)
+                    _playerList.Add(new Player(exportPlayer));
+                initializeMatrix();
+                foreach (Player p in _playerList)
+                {
+                    foreach (snakeBody s in p.getCoordinates())
+                    {
+                        updateSlot(s.getX(), s.getY(), s.getHead(), _playerList[_playerList.IndexOf(p)].getPlayerType(), s.getDirection(), s.getHead());
+                    }
+                }
+
+                p1NameLabel.Text = _playerList[0].getPlayerName();
+                p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
+                p1ScoreLabel2.Text = _playerList[0].getScore().ToString();
+
+                if (_playerList.Count > 1)
+                {
+                    p2NameLabel.Text = _playerList[1].getPlayerName();
+                    p2NameLabel.Visible = p2ScoreLabel1.Visible = p2ScoreLabel2.Visible = true;
+                    p2ScoreLabel2.Text = _playerList[1].getScore().ToString();
+                }
+
+                countdownTimer = new Timer();
+                countdownTimer.Interval = 1000; // 1 second
+                countdownTimer.Tick += countDown_Tick;
+                countdownTimer.Start();
+
+                boardTimer = new Timer();
+                boardTimer.Interval = 200;
+                boardTimer.Tick += boardTimer_Tick;
+
+                generateFoodTimer = new Timer();
+                generateFoodTimer.Interval = 7000; // 7 seconds
+                generateFoodTimer.Tick += generateFood;
             }
-
-            for (int i = 0; i < _playerList.Count; i++)
-                _playerList[i].setStatus(true);
-
-            countdownTimer = new Timer();
-            countdownTimer.Interval = 1000; // 1 second
-            countdownTimer.Tick += countDown_Tick;
-            countdownTimer.Start();
-
-            boardTimer = new Timer();
-            boardTimer.Interval = 200;
-            boardTimer.Tick += boardTimer_Tick;
-
-            generateFoodTimer = new Timer();
-            generateFoodTimer.Interval = 7000; // 7 seconds
-            generateFoodTimer.Tick += generateFood;
-
-            //readMatrix();
         }
 
         static int count = 5;
@@ -118,7 +164,6 @@ namespace Snake
         private void boardTimer_Tick(object sender, EventArgs e)
         {
             int temp = 0;
-            bool finalStatus = true;
             foreach (Player pl in _playerList)
             {
                 if (pl.isAlive())
@@ -386,27 +431,17 @@ namespace Snake
             }
         }
 
-        private void saveAndExit()
+        public void SerializeNow()
         {
-            SerializeNow();
-        }
-
-        public static void SerializeNow()
-        {
-            using (FileStream fileStream = new FileStream("savegame.json", FileMode.Create))
+            List<exportPlayer> exportPlayers = new List<exportPlayer>();
+            for (int i = 0; i < _playerList.Count; i++)
+                exportPlayers.Add(new exportPlayer(_playerList[i]));
+            IFormatter formatter = new BinaryFormatter();
+            using (Stream stream = new FileStream("savegame.dat", FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(_playerList.GetType());
-                //serializer.WriteObject(fileStream, _playerList);
-                serializer = new DataContractJsonSerializer(_gameMatrix.GetType());
-                serializer.WriteObject(fileStream, _gameMatrix);
-            }
-        }
-        public T DeSerializeNow<T>()
-        {
-            using (FileStream fileStream = new FileStream("savegame.json", FileMode.Open))
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-                return (T)serializer.ReadObject(fileStream);
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
+                formatter.Serialize(stream, exportPlayers);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
             }
         }
 
@@ -443,7 +478,7 @@ namespace Snake
             else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
                 type = "Keyboard (Arrows)";
             //TODO add controller
-            if (e.KeyCode == Keys.Escape)
+            if (e.KeyCode == Keys.Escape) // if pause
             {
                 foreach (Slot s in _gameMatrix)
                     if (s is Food f)
@@ -464,10 +499,17 @@ namespace Snake
                         if (s is Food f)
                             f.getTimer().Start();
                 }
+                else if (pause.getChoice() == choice.exitNoSave)
+                {
+                    Close();
+                    _mainMenu.Show();
+                }
                 else if (pause.getChoice() == choice.saveExit)
                 {
-                    Board.SerializeNow();
+                    SerializeNow();
+                    _mainMenu.showContinue();
                     Close();
+                    _mainMenu.Show();
                 }
             }
             for (int i = 0; i < _playerList.Count; i++)
@@ -506,7 +548,6 @@ namespace Snake
                                     _playerList[i].setLocked(true);
                                     break;
                             }
-
                         }
                     }
                     _playerList[i].getCoordinates()[0].setDirection(d);

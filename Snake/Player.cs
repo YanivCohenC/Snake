@@ -23,6 +23,24 @@
             _locked = false;
         }
 
+        public Player(exportPlayer p)
+        {
+            _playerName = p.getName();
+            _playerScore = p.getScore();
+            _snakeType = p.getType();
+            _playerInput = p.getInput();
+            _status = p.getStatus();
+            _coordinates = new List<snakeBody>();
+            for (int i = 0; i < p.getCoordinates().Count; i++)
+            {
+                if (i == 0)
+                    _coordinates.Add(new snakeBody(true, p.getType(), p.getDirection()[i], p.getCoordinates()[i].First().Key, p.getCoordinates()[i].First().Value, p.getStatus()));
+                else
+                    _coordinates.Add(new snakeBody(false, p.getType(), p.getDirection()[i], p.getCoordinates()[i].First().Key, p.getCoordinates()[i].First().Value, p.getStatus()));
+            }
+            _locked = false;
+        }
+
         public int getScore()
         {
             return _playerScore;

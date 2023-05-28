@@ -7,7 +7,6 @@
 
         public Slot()
         {
-           
             _image = new PictureBox();
             _image.BackgroundImage = Snake.Properties.Resources.Empty;
             _image.BackgroundImageLayout = ImageLayout.Stretch;

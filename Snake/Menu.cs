@@ -1,3 +1,5 @@
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
 
@@ -6,13 +8,12 @@ namespace Snake;
 public partial class Menu : Form
 {
     private const int CB_SETCUEBANNER = 0x1703;
-
     [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
-
     private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)] string lParam);
 
     private List<string> _controlList;
     private static Dictionary<string, int> _scoreboard;
+    private bool _isContinue;
 
     public Menu()
     {
@@ -29,7 +30,34 @@ public partial class Menu : Form
         p1Controller.Items.AddRange(_controlList.ToArray<String>());
         p2Controller.Items.AddRange(_controlList.ToArray<String>());
 
-        _scoreboard = new Dictionary<string, int>();
+        if (File.Exists("scoreboard.dat"))
+        {
+            Stream stream = File.Open("scoreboard.dat", FileMode.Open);
+            var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
+            _scoreboard = (Dictionary<string, int>)binaryFormatter.Deserialize(stream);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
+            stream.Close();
+            File.Delete("scoreboard.dat");
+        }    
+        else
+            _scoreboard = new Dictionary<string, int>();
+        _isContinue = false;
+        if (File.Exists("savegame.dat"))
+            continueGame.Enabled = true;
+        else
+            continueGame.Enabled = false;
+    }
+
+    private void serializeScoreboard()
+    {
+        IFormatter formatter = new BinaryFormatter();
+        using (Stream stream = new FileStream("scoreboard.dat", FileMode.Create, FileAccess.Write, FileShare.None))
+        {
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
+            formatter.Serialize(stream, _scoreboard);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
+        }
     }
 
     private void newGame_Click(object sender, EventArgs e)
@@ -38,6 +66,8 @@ public partial class Menu : Form
             MessageBox.Show("Please choose a controller");
         else
         {
+            _isContinue = false;
+            continueGame.Enabled = false;
             this.Hide();
             Board board = new Board(this);
             board.ShowDialog();
@@ -46,7 +76,25 @@ public partial class Menu : Form
 
     private void continueGame_Click(object sender, EventArgs e)
     {
+        _isContinue = true;
+        this.Hide();
+        Board board = new Board(this);
+        board.ShowDialog();
+    }
 
+    public bool isContinue()
+    {
+        return _isContinue;
+    }
+
+    public void hideContinue()
+    {
+        continueGame.Enabled = false;
+    }
+
+    public void showContinue()
+    {
+        continueGame.Enabled = true;
     }
 
     private void openScoreBoard_Click(object sender, EventArgs e)
@@ -59,6 +107,7 @@ public partial class Menu : Form
 
     private void quitGame_Click(object sender, EventArgs e)
     {
+        serializeScoreboard();
         Close();
     }
 
