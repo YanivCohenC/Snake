@@ -1,7 +1,5 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
 
 namespace Snake;
 
@@ -14,22 +12,20 @@ public partial class Menu : Form
     private List<string> _controlList;
     private static Dictionary<string, int> _scoreboard;
     private bool _isContinue;
+    private List<string> p1ControlsList;
+    private List<string> p2ControlsList;
 
     public Menu()
     {
         InitializeComponent();
         // Controllers
-        _controlList = new List<string>();
-        _controlList.Add("Keyboard (WASD)");
-        _controlList.Add("Keyboard (Arrows)");
-        p1Controller.SelectedItem = p2Controller.SelectedItem = null;
+        p1ControlsList = new List<string>() { "Keyboard (WASD)", "Keyboard (Arrows)" };
+        p2ControlsList = new List<string>() { "Keyboard (WASD)", "Keyboard (Arrows)", "Disabled" };
+        p1Controller.Text = p2Controller.Text = "Choose your controller:";
+        p1Controller.Items.AddRange(p1ControlsList.ToArray<string>());
+        p2Controller.Items.AddRange(p2ControlsList.ToArray<string>());
         SendMessage(this.p1Controller.Handle, CB_SETCUEBANNER, 0, "Choose your controller:");
         SendMessage(this.p2Controller.Handle, CB_SETCUEBANNER, 0, "Choose your controller:");
-
-        p1Controller.Text = p2Controller.Text = "Choose your controller:";
-        p1Controller.Items.AddRange(_controlList.ToArray<String>());
-        p2Controller.Items.AddRange(_controlList.ToArray<String>());
-
         if (File.Exists("scoreboard.dat"))
         {
             Stream stream = File.Open("scoreboard.dat", FileMode.Open);
@@ -113,23 +109,31 @@ public partial class Menu : Form
 
     private void p1Controller_SelectionChangeCommitted(object sender, EventArgs e)
     {
-        object selectedItem = p1Controller.SelectedItem;
+        p2ControlsList.Remove(p1Controller.SelectedItem.ToString());
         p2Controller.Items.Clear();
-        p2Controller.Items.AddRange(_controlList.ToArray<String>());
-        p2Controller.Items.Remove(selectedItem);
-        p2Controller.SelectedItem = "Disabled";
-
-        if (p2Controller.FindString("Disabled") == -1)
-            p2Controller.Items.Add("Disabled");
+        p2Controller.Items.AddRange(p2ControlsList.ToArray<string>());
+        for (int i = 0; i < p1ControlsList.Count; i++)
+        {
+            if (p2ControlsList.Contains(p1ControlsList[i]) == false && p1Controller.SelectedItem.ToString() != p1ControlsList[i])
+            {
+                p2ControlsList.Add(p1ControlsList[i]);
+                p2Controller.Items.Clear();
+                p2Controller.Items.AddRange(p2ControlsList.ToArray<string>());
+            }
+        }
     }
 
     private void p2Controller_SelectionChangeCommitted(object sender, EventArgs e)
     {
-        object selectedItem = p2Controller.SelectedItem;
-        p1Controller.Items.Clear();
-        p1Controller.Items.AddRange(_controlList.ToArray<String>());
-        p1Controller.Items.Remove(selectedItem);
-        p1Controller.SelectedIndex = 0;
+        for (int i = 0; i < p2ControlsList.Count; i++)
+        {
+            if (p1ControlsList.Contains(p2ControlsList[i]) == false && p2ControlsList[i] != "Disabled")
+            {
+                p1ControlsList.Add(p2ControlsList[i]);
+                p1Controller.Items.Clear();
+                p1Controller.Items.AddRange(p1ControlsList.ToArray<string>());
+            }
+        }
     }
 
     public string getP1Name()
