@@ -19,9 +19,7 @@ namespace Snake
             if (Menu.getScoreboard().Count != 0)
                 highScores.DataSource = new BindingSource(Menu.getScoreboard(), null);
             else
-            {
                 deleteScore.Enabled = false;
-            }    
         }
 
         private void button2_Click(object sender, EventArgs e)

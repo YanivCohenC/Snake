@@ -5,6 +5,7 @@ namespace Snake;
 
 public partial class Menu : Form
 {
+    // changes the text of the controller choice to a fancy text
     private const int CB_SETCUEBANNER = 0x1703;
     [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
     private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)] string lParam);
@@ -26,6 +27,7 @@ public partial class Menu : Form
         p2Controller.Items.AddRange(p2ControlsList.ToArray<string>());
         SendMessage(this.p1Controller.Handle, CB_SETCUEBANNER, 0, "Choose your controller:");
         SendMessage(this.p2Controller.Handle, CB_SETCUEBANNER, 0, "Choose your controller:");
+        // Scoreboard deserialization
         if (File.Exists("scoreboard.dat"))
         {
             Stream stream = File.Open("scoreboard.dat", FileMode.Open);
@@ -39,12 +41,14 @@ public partial class Menu : Form
         else
             _scoreboard = new Dictionary<string, int>();
         _isContinue = false;
+        // Check for save file
         if (File.Exists("savegame.dat"))
             continueGame.Enabled = true;
         else
             continueGame.Enabled = false;
     }
 
+    // Serialize the scoreboard
     private void serializeScoreboard()
     {
         IFormatter formatter = new BinaryFormatter();

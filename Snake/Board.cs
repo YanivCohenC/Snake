@@ -13,18 +13,17 @@ namespace Snake
         private const int SIZE_X = 32;
         private const int SIZE_Y = 32;
 
-        private Menu _mainMenu;
-        private List<Player> _playerList; // For scoreboard
+        private Menu _mainMenu; // To access mainmenu features
+        private List<Player> _playerList; // For every snake on board
         private Slot[,] _gameMatrix; // For all of the elements on board
 
-        private Timer countdownTimer;
-        private Timer boardTimer;
-        private Timer generateFoodTimer;
+        private Timer countdownTimer; // Count 5 seconds until game start
+        private Timer boardTimer; // Board tick
+        private Timer generateFoodTimer; // Food tick
 
         public Board(Menu other)
         {
             InitializeComponent();
-
             _mainMenu = other;
             _playerList = new List<Player>();
             _gameMatrix = new Slot[ROWS, COLS];
@@ -32,34 +31,27 @@ namespace Snake
 
         private void Board_Load(object sender, EventArgs e)
         {
-            if (_mainMenu.isContinue() == false)
+            if (_mainMenu.isContinue() == false) // If new game
             {
-                if (File.Exists("savegame.dat") == true)
+                if (File.Exists("savegame.dat") == true) // Delete saved file
                     File.Delete("savegame.dat");
                 string p1Name = p1NameLabel.Text = _mainMenu.getP1Name();
                 string p2Name = p2NameLabel.Text = _mainMenu.getP2Name();
                 string p2Controller = _mainMenu.getP2Controller();
-
                 if (p1Name == "")
-                {
                     p1NameLabel.Text = p1Name = "Snake 1";
-                }
-
+                // Creation of player 1
                 Player p1 = new Player(p1Name, _mainMenu.getP1Controller(), _mainMenu.getP1Type());
                 _playerList.Add(p1);
                 _playerList[0].getCoordinates().Add(new snakeBody(true, p1.getPlayerType(), Direction.Down, 6, 1, true));
                 _playerList[0].getCoordinates().Add(new snakeBody(false, p1.getPlayerType(), Direction.Down, 6, 0, true));
                 _playerList[0].setPlayerName(p1Name);
-
                 p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
+                // Creation of player 2
                 if (p2Controller != "" && p2Controller != "Disabled")
                 {
                     if (p2Name == "")
-                    {
                         p2NameLabel.Text = p2Name = "Snake 2";
-                    }
-
-
                     Player p2 = new Player(p1Name, p2Controller, _mainMenu.getP2Type());
                     _playerList.Add(p2);
                     _playerList[1].getCoordinates().Add(new snakeBody(true, p2.getPlayerType(), (int)Direction.Up, 13, 18, true));
@@ -68,35 +60,31 @@ namespace Snake
                     p2NameLabel.Visible = p2ScoreLabel1.Visible = p2ScoreLabel2.Visible = true;
                 }
                 initializeMatrix();
-
+                // Place first snake locations
                 updateSlot(6, 0, false, _playerList[0].getPlayerType(), Direction.Down, true);
                 updateSlot(6, 1, true, _playerList[0].getPlayerType(), Direction.Down, true);
-
-
                 if (_playerList.Count > 1)
                 {
                     updateSlot(13, 19, false, _playerList[1].getPlayerType(), Direction.Up, true);
                     updateSlot(13, 18, true, _playerList[1].getPlayerType(), Direction.Up, true);
                 }
-
                 for (int i = 0; i < _playerList.Count; i++)
-                    _playerList[i].setStatus(true);
-
+                    _playerList[i].setStatus(true); // Set status of players to alive
+                // Start timers
                 countdownTimer = new Timer();
                 countdownTimer.Interval = 1000; // 1 second
                 countdownTimer.Tick += countDown_Tick;
                 countdownTimer.Start();
-
                 boardTimer = new Timer();
                 boardTimer.Interval = 200;
                 boardTimer.Tick += boardTimer_Tick;
-
                 generateFoodTimer = new Timer();
                 generateFoodTimer.Interval = 7000; // 7 seconds
                 generateFoodTimer.Tick += generateFood;
             }
-            else
+            else // If continue game
             {
+                // Deserialize
                 Stream stream = File.Open("savegame.dat", FileMode.Open);
                 List<exportPlayer> temp = new List<exportPlayer>();
                 var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
@@ -109,40 +97,34 @@ namespace Snake
                 foreach (var exportPlayer in temp)
                     _playerList.Add(new Player(exportPlayer));
                 initializeMatrix();
+                // Place first snake locations
                 foreach (Player p in _playerList)
-                {
                     foreach (snakeBody s in p.getCoordinates())
-                    {
                         updateSlot(s.getX(), s.getY(), s.getHead(), _playerList[_playerList.IndexOf(p)].getPlayerType(), s.getDirection(), s.getHead());
-                    }
-                }
-
                 p1NameLabel.Text = _playerList[0].getPlayerName();
                 p1NameLabel.Visible = p1ScoreLabel1.Visible = p1ScoreLabel2.Visible = true;
                 p1ScoreLabel2.Text = _playerList[0].getScore().ToString();
-
                 if (_playerList.Count > 1)
                 {
                     p2NameLabel.Text = _playerList[1].getPlayerName();
                     p2NameLabel.Visible = p2ScoreLabel1.Visible = p2ScoreLabel2.Visible = true;
                     p2ScoreLabel2.Text = _playerList[1].getScore().ToString();
                 }
-
+                // Start timers
                 countdownTimer = new Timer();
                 countdownTimer.Interval = 1000; // 1 second
                 countdownTimer.Tick += countDown_Tick;
                 countdownTimer.Start();
-
                 boardTimer = new Timer();
                 boardTimer.Interval = 200;
                 boardTimer.Tick += boardTimer_Tick;
-
                 generateFoodTimer = new Timer();
                 generateFoodTimer.Interval = 7000; // 7 seconds
                 generateFoodTimer.Tick += generateFood;
             }
         }
 
+        // For countdown
         static int count = 5;
         private void countDown_Tick(object sender, EventArgs e)
         {
@@ -156,14 +138,13 @@ namespace Snake
                 countdownLabel.Hide();
                 boardTimer.Start();
                 generateFoodTimer.Start();
-                generateFood(null, EventArgs.Empty);
+                generateFood(null, EventArgs.Empty); // Generate food on game start
                 // Start the game here
             }
         }
 
         private void boardTimer_Tick(object sender, EventArgs e)
         {
-            int temp = 0;
             foreach (Player pl in _playerList)
             {
                 if (pl.isAlive())
@@ -172,13 +153,13 @@ namespace Snake
                     var oldCoordinates = newCoordinates.Select(sb => new Point(sb.getX(), sb.getY())).ToList(); // copy newCoordinates by value as Point()
                     snakeBody head = newCoordinates[0];
                     Direction d = head.getDirection();
-
+                    // Copy coordinates of previous body to current body
                     for (int i = 1; i < newCoordinates.Count; i++)
                     {
                         newCoordinates[i].setX(oldCoordinates[i - 1].X);
                         newCoordinates[i].setY(oldCoordinates[i - 1].Y);
                     }
-
+                    // Move head by direction
                     switch (d)
                     {
                         case Direction.Up:
@@ -194,14 +175,12 @@ namespace Snake
                             head.setX(head.getX() + 1);
                             break;
                     }
-
+                    // If player did an illegal move
                     if (!pl.isAlive() || head.getX() == ROWS || head.getX() < 0 || head.getY() == COLS || head.getY() < 0 || pl.getScore() < 0 || _gameMatrix[head.getX(), head.getY()] is snakeBody body) // if dead
                     {
                         pl.setStatus(false); // kill player
-                        for (int i = 1; i < oldCoordinates.Count; i++)
-                        {
+                        for (int i = 1; i < oldCoordinates.Count; i++) // Remove body
                             updateSlot(oldCoordinates[i].X, oldCoordinates[i].Y, false, -1, d, false);
-                        }
                         updateSlot(oldCoordinates[0].X, oldCoordinates[0].Y, true, pl.getPlayerType(), d, false); // dead head
                         newCoordinates.Clear();
                     }
@@ -209,10 +188,10 @@ namespace Snake
                     {
                         if (_gameMatrix[head.getX(), head.getY()] is Food food) // if food
                         {
-                            if (food.isExpired() == false)
+                            if (food.isExpired() == false) // if food counter has not expired
                             {
                                 food.getTimer().Stop();
-                                pl.updateScore(food.effect());
+                                pl.updateScore(food.effect()); // Polymorphysm
                                 generateFood(null, EventArgs.Empty);
                                 if (food is not Poop) // player ate apple or cherry
                                     newCoordinates.Add(new snakeBody(false, pl.getPlayerType(), d, oldCoordinates[oldCoordinates.Count - 1].X, oldCoordinates[oldCoordinates.Count - 1].Y, true));
@@ -226,26 +205,22 @@ namespace Snake
                                         updateSlot(head.getX(), head.getY(), true, pl.getPlayerType(), d, false); // dead head
                                     }
                                     else
-                                        newCoordinates.RemoveAt(newCoordinates.Count - 1);
+                                        newCoordinates.RemoveAt(newCoordinates.Count - 1); // Remove from tail
                                 }
-                                if (pl == _playerList[0])
+                                if (pl == _playerList[0]) // set score label
                                 {
                                     if (pl.getScore() >= 0)
                                         p1ScoreLabel2.Text = pl.getScore().ToString();
                                     else
                                         p1ScoreLabel2.Text = "0";
                                 }
-                                else if (pl.getScore() >= 0)
-                                {
+                                else if (pl.getScore() >= 0) 
                                     p2ScoreLabel2.Text = pl.getScore().ToString();
-                                }
                                 else
                                     p2ScoreLabel2.Text = "0";
                             }
-                            else
-                            {
+                            else // if food has expired
                                 updateSlot(oldCoordinates[oldCoordinates.Count - 1].X, oldCoordinates[oldCoordinates.Count - 1].Y, false, -1, d, true);
-                            }
                         }
                         else // if regular movement, delete tail
                             updateSlot(oldCoordinates[oldCoordinates.Count - 1].X, oldCoordinates[oldCoordinates.Count - 1].Y, false, -1, d, true);
@@ -268,9 +243,7 @@ namespace Snake
             else if (_playerList[0].getStatus() == false) // if the only player left died
                 showDeathScreen();
             foreach (Player p in _playerList)
-            {
-                p.setLocked(false);
-            }
+                p.setLocked(false); // unlock player until next tick
         }
 
         private void updateScoreboard(Player pl)
@@ -284,6 +257,7 @@ namespace Snake
                 p.Add(pl.getPlayerName(), pl.getScore());
         }
 
+        // Change matrix
         private void updateSlot(int x, int y, bool isHead, int type, Direction d, bool status)
         {
             Point p = _gameMatrix[x, y].getPicture().Location;
@@ -305,46 +279,41 @@ namespace Snake
             Random rnd = new Random();
             Timer timer = null;
             bool foodExists = false;
-            int num = rnd.Next(3);
+            int num = rnd.Next(3); // random 0-2
             if (num == (int)foodType.Poop)
             {
                 foreach (Slot s in _gameMatrix)
                     if ((s is Apple && ((Apple)s).isExpired() == false)  || (s is Cherry && ((Cherry)s).isExpired() == false)) // if there is food
                         foodExists = true;
                 if (foodExists == false)
-                    num = rnd.Next(2);
+                    num = rnd.Next(2); // random 0-1
             }
-            while (1 != 2)
+            while (1 != 2) // Keep generating food until valid spot
             {
                 int x = rnd.Next(ROWS);
                 int y = rnd.Next(COLS);
-
                 if (_gameMatrix[x, y] is Slot && _gameMatrix[x, y] is not snakeBody)
                 {
                     Point p = _gameMatrix[x, y].getPicture().Location;
                     this.Controls.Remove(_gameMatrix[x, y].getPicture());
-
                     if (num == (int)foodType.Apple)
                     {
                         Apple s = new Apple();
                         _gameMatrix[x, y] = s;
                         timer = s.getTimer();
-
                     }
-                    if (num == (int)foodType.Cherry)
+                    else if (num == (int)foodType.Cherry)
                     {
                         Cherry s = new Cherry();
                         _gameMatrix[x, y] = s;
                         timer = s.getTimer();
                     }
-
-                    if (num == (int)foodType.Poop)
+                    else if (num == (int)foodType.Poop)
                     {
                         Poop s = new Poop();
                         _gameMatrix[x, y] = s;
                         timer = s.getTimer();
                     }
-
                     timer.Start();
                     _gameMatrix[x, y].getPicture().Location = p;
                     _gameMatrix[x, y].getPicture().Size = new Size(SIZE_X, SIZE_Y);
@@ -368,9 +337,7 @@ namespace Snake
                             img = Snake.Properties.Resources.head0Dead;
                     }
                     else
-                    {
                         img = Snake.Properties.Resources.snake0Body;
-                    }
                     break;
                 case 1:
                     if (isHead == true)
@@ -381,9 +348,7 @@ namespace Snake
                             img = Snake.Properties.Resources.head1Dead;
                     }
                     else
-                    {
                         img = Snake.Properties.Resources.snake1Body;
-                    }
                     break;
                 case 2:
                     if (isHead == true)
@@ -394,9 +359,7 @@ namespace Snake
                             img = Snake.Properties.Resources.head2Dead;
                     }
                     else
-                    {
                         img = Snake.Properties.Resources.snake2Body;
-                    }
                     break;
             }
             switch (d)
@@ -447,8 +410,6 @@ namespace Snake
 
         private void Board_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // save data after game
-            // warning message exit without saving? or with
             count = 5;
         }
 
@@ -477,7 +438,6 @@ namespace Snake
                 type = "Keyboard (WASD)";
             else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
                 type = "Keyboard (Arrows)";
-            //TODO add controller
             if (e.KeyCode == Keys.Escape) // if pause
             {
                 foreach (Slot s in _gameMatrix)
@@ -527,7 +487,7 @@ namespace Snake
                                 case Keys.W:
                                     if (d == Direction.Left || d == Direction.Right)
                                         d = Direction.Up;
-                                    _playerList[i].setLocked(true);
+                                    _playerList[i].setLocked(true); // lock player after he chose direction
                                     break;
                                 case Keys.Left:
                                 case Keys.A:
